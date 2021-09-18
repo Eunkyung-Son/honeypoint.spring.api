@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="restaurantMapper">
+	<resultMap type="Restaurant" id="restaurantResultSet">
+		<id property="rNo" column="R_NO"/>
+		<result property="mNo" column="M_NO"/>
+		<result property="rTel" column="R_TEL"/>
+		<result property="rType" column="R_TYPE"/>
+		<result property="rName" column="R_NAME"/>
+		<result property="rAddress" column="R_ADDRESS"/>
+		<result property="rOAddress" column="R_O_ADDRESS"/>
+		<result property="rTag" column="R_TAG"/>
+		<result property="rPrice" column="R_PRICE"/>
+		<result property="rParking" column="R_PARKING"/>
+		<result property="rStartTime" column="R_START_TIME"/>
+		<result property="rEndTime" column="R_END_TIME"/>
+		<result property="rRating" column="R_RATING"/>
+		<result property="rIntro" column="R_INTRO"/>
+		<result property="resveYn" column="RESVE_YN"/>
+		<result property="rRestDay" column="R_REST_DAY"/>
+		<result property="rStatus" column="R_STATUS"/>
+		<result property="rCount" column="R_COUNT"/>
+	</resultMap>
+	
+	<resultMap type="Review" id="reviewResultSet">
+		<id property="revNo" column="REV_NO"/>
+		<result property="rNo" column="R_NO"/>
+		<result property="revCn" column="REV_CN"/>
+		<result property="revDate" column="REV_DATE"/>
+		<result property="score" column="SCORE"/>
+		<result property="revStatus" column="REV_STATUS"/>
+		<result property="mNo" column="M_NO"/>
+		<association property="member" javaType="Member">
+			<result property="mOriginPf" column="M_ORIGIN_PF"/>
+			<result property="mStrePf" column="M_STRE_PF"/>
+		</association>
+		<association property="gnrlMember" javaType="GnrlMember">
+			<result property="mNickname" column="M_NICKNAME"/>
+			<result property="mGrad" column="M_GRAD"/>
+		</association>
+	</resultMap>
+	
+	<resultMap type="GnrlMember" id="GnrlMemberResultSet">
+		<id property="mNo" column="M_NO"/>
+		<result property="mNickname" column="M_NICKNAME"/>
+		<result property="mBirthday" column="M_BIRTHDAY"/>
+		<result property="mPhone" column="M_PHONE"/>
+		<result property="mAddress" column="M_ADDRESS"/>
+		<result property="mGrad" column="M_GRAD"/>
+		<result property="mPoint" column="M_POINT"/>
+	</resultMap>
+
+	<resultMap type="Member" id="memberResultSet">
+		<id property="mNo" column="M_NO"/>
+		<result property="mId" column="M_ID"/>
+		<result property="mName" column="M_NAME"/>
+		<result property="mEmail" column="M_EMAIL"/>
+		<result property="mEnrollDate" column="M_ENROLL_DATE"/>
+		<result property="mModifyDate" column="M_MODIFY_DATE"/>
+		<result property="mStatus" column="M_STATUS"/>
+		<result property="rConf" column="R_CONF"/>
+		<result property="mOriginPf" column="M_ORIGIN_PF"/>
+		<result property="mStrePf" column="M_STRE_PF"/>
+		<result property="mSortNo" column="M_SORT_NO"/>
+	</resultMap>
+	
+	<resultMap type="Photofile" id="photofileResultSet">
+		<id property="photofileId" column="R_PHOTO_FILE_ID"/>
+		<result property="rNo" column="R_NO"/>
+		<result property="originFileName" column="ORIGIN_FILE_NM"/>
+		<result property="streFileName" column="STRE_FILE_NM"/>
+		<result property="imgType" column="IMG_TYPE"/>
+	</resultMap>
+	
+	<resultMap type="RstrntMenu" id="rstrntMenuResultSet">
+		<id property="menuNo" column="MENU_NO"/>
+		<result property="rNo" column="R_NO"/>
+		<result property="menuName" column="MENU_NAME"/>
+		<result property="menuPrice" column="MENU_PRICE"/>
+	</resultMap>
+	
+	<resultMap type="ReviewCount" id="reviewCountResultSet">
+		<result property="allReviewCount" column="A"/>
+		<result property="recommendReviewCount" column="B"/>
+		<result property="okReviewCount" column="C"/>
+		<result property="unRecommendReviewCount" column="D"/>
+	</resultMap>
+	
+	<resultMap type="ReviewImg" id="reviewImgResultSet">
+		<id property="fileNo" column="FILE_NO"/>
+		<result property="revNo" column="REV_NO"/>
+		<result property="rNo" column="R_NO"/>
+		<result property="originlCours" column="ORGINL_COURS"/>
+		<result property="atchmnflCours" column="ATCHMNFL_COURS"/>
+	</resultMap>
+	
+	<resultMap type="Favor" id="favorResultSet">
+		<result property="rNo" column="R_NO"/>
+		<result property="mNo" column="M_NO"/>
+	</resultMap>
+	
+	<resultMap type="Reservation" id="reservationResultSet">
+		<id property="resveNo" column="RESVE_NO"/>
+		<result property="rsvctm" column="RSVCTM"/>
+		<result property="rsvde" column="RSVDE"/>
+		<result property="rsvtm" column="RSVTM"/>
+		<result property="visitrCo" column="VISITR_CO"/>
+		<result property="resveReq" column="RESVE_REQ"/>
+		<result property="resvePhone" column="RESVE_PHONE"/>
+		<result property="rNo" column="R_NO"/>
+		<result property="mNo" column="M_NO"/>
+		<result property="resveAmount" column="RESVE_AMOUNT"/>
+	</resultMap>
+	
+	<update id="updateCount" parameterType="_int">
+		UPDATE TB_RSTRNT_INFO
+		SET R_COUNT = R_COUNT+1
+		WHERE R_NO=#{rNo}
+	</update>
+	
+	<select id="selectOne" parameterType="_int" resultMap="restaurantResultSet">
+		SELECT *
+		FROM TB_RSTRNT_INFO
+		WHERE R_NO=#{rNo}
+		AND R_STATUS=1
+	</select>
+	
+	<select id="selectAll" resultMap="restaurantResultSet">
+		SELECT *
+		FROM TB_RSTRNT_INFO
+	</select>
+
+	<select id="selectAllWithType" parameterType="string" resultMap="restaurantResultSet">
+		SELECT *
+		FROM TB_RSTRNT_INFO
+		WHERE R_TYPE=#{restaurantType}
+		AND R_STATUS=1
+	</select>
+
+
+	<select id="selectImgListCount" parameterType="_int" resultType="_int">
+		SELECT COUNT(*)
+		FROM TB_PHOTOFILES
+		WHERE R_NO=#{rNo}
+	</select>
+	
+	<select id="selectImgList" parameterType="_int" resultMap="photofileResultSet">
+		SELECT *
+		FROM TB_PHOTOFILES
+		WHERE R_NO=#{rNo}
+	</select>
+	
+	<select id="selectMenuList" parameterType="_int" resultMap="rstrntMenuResultSet">
+		SELECT MENU_NAME, TO_CHAR(MENU_PRICE, '999,999,999,999,999') AS MENU_PRICE
+		FROM TB_RSTRNT_MENU
+		WHERE R_NO=#{rNo}
+	</select>
+	
+	<select id="selectReviewList" parameterType="HashMap" resultMap="reviewResultSet">
+		SELECT REV_NO, REV_CN, TO_CHAR(REV_DATE, 'YYYY.MM.DD') AS REV_DATE, SCORE, M_NO, M_ORIGIN_PF, M_STRE_PF, M_NICKNAME, M_GRAD
+		FROM TB_REVIEW
+		JOIN TB_MEMBER USING(M_NO)
+		JOIN TB_GNRL_MEMBER USING(M_NO)
+		WHERE R_NO = #{rNo}
+		AND REV_STATUS = 'Y'
+		ORDER BY REV_NO DESC
+	</select>
+	
+	<select id="selectReviewCount" parameterType="_int" resultMap="reviewCountResultSet">
+		SELECT
+		(SELECT COUNT(*) FROM TB_REVIEW WHERE R_NO = #{rNo} AND REV_STATUS = 'Y')A,
+		(SELECT COUNT(*) FROM TB_REVIEW WHERE SCORE = 1 AND R_NO = #{rNo} AND REV_STATUS = 'Y')B,
+		(SELECT COUNT(*) FROM TB_REVIEW WHERE SCORE = 2 AND R_NO = #{rNo} AND REV_STATUS = 'Y')C,
+		(SELECT COUNT(*) FROM TB_REVIEW WHERE SCORE = 3 AND R_NO = #{rNo} AND REV_STATUS = 'Y')D
+		FROM DUAL
+	</select>
+	
+	<select id="selectReviewImgList" parameterType="HashMap" resultMap="reviewImgResultSet">
+		SELECT *
+		FROM TB_REVIEW_IMAGE_LIST
+		WHERE REV_NO = #{revNo}
+		AND R_NO = #{rNo}
+		ORDER BY FILE_NO
+	</select>
+	
+	<select id="selectReviewImgListCount" parameterType="ReviewImg" resultType="_int">
+		SELECT COUNT(*)
+		FROM TB_REVIEW_IMAGE_LIST
+		WHERE REV_NO = #{revNo}
+		AND R_NO = #{rNo}
+		ORDER BY FILE_NO
+	</select>
+	
+	<select id="selectReviewFilterList" parameterType="HashMap" resultMap="reviewResultSet">
+		SELECT REV_NO, REV_CN, TO_CHAR(REV_DATE, 'YYYY.MM.DD') AS REV_DATE, SCORE, M_NO, M_ORIGIN_PF, M_STRE_PF, M_NICKNAME, M_GRAD
+		FROM TB_REVIEW
+		JOIN TB_MEMBER USING(M_NO)
+		JOIN TB_GNRL_MEMBER USING(M_NO)
+		WHERE R_NO = #{rNo}
+		AND SCORE = #{filterCheck}
+		AND REV_STATUS = 'Y'
+		ORDER BY REV_NO DESC
+	</select>
+	
+	<insert id="insertReview" parameterType="Review">
+		INSERT INTO TB_REVIEW
+            VALUES(RSTRNT_REV_SEQ.NEXTVAL, #{ rNo }, #{ revCn }, SYSDATE, #{ score }, DEFAULT, #{ mNo })
+	</insert>
+	
+	<insert id="insertReviewImg" parameterType="InsertReviewImg">
+		<foreach collection="originFileList" item="originFileList" open="INSERT ALL" separator=" " close="SELECT * FROM DUAL" index="index">
+			INTO TB_REVIEW_IMAGE_LIST VALUES (#{index}, ${ rNo }, RSTRNT_REV_SEQ.CURRVAL, '${ originFileList }', '${ renameFileList[index] }')
+		</foreach>
+		 
+	</insert>
+	
+	<insert id="updateReviewImg" parameterType="UpdateReviewImg">
+		<foreach collection="originFileList" item="originFileList" open="INSERT ALL" separator=" " close="SELECT * FROM DUAL" index="index">
+			INTO TB_REVIEW_IMAGE_LIST VALUES (${ lastNumberCount[index] }, ${ rNo }, ${ revNo }, '${ originFileList }', '${ renameFileList[index] }')
+		</foreach>
+		 
+	</insert>
+	
+	<select id="selectReview" parameterType="Review" resultMap="reviewResultSet">
+		SELECT *
+		FROM TB_REVIEW
+		WHERE REV_NO = #{ revNo }
+		AND R_NO = #{ rNo }
+		AND REV_STATUS = 'Y'
+	</select>
+	
+	<select id="selectReviewImg" parameterType="ReviewImg" resultType="string">
+		SELECT ATCHMNFL_COURS
+		FROM TB_REVIEW_IMAGE_LIST
+		WHERE REV_NO = #{ revNo }
+		AND R_NO = #{ rNo }
+		AND FILE_NO = #{ fileNo }
+	</select>
+	
+	<delete id="deleteReviewImg" parameterType="hashmap">
+		DELETE FROM TB_REVIEW_IMAGE_LIST
+    	WHERE EXISTS (
+                  SELECT ATCHMFL_COURS FROM TB_REVIEW_IMAGE_LIST
+		<foreach collection="names" item="item" open="WHERE " close=")" separator=" OR ">
+			ATCHMNFL_COURS = #{ item }
+		</foreach>
+	</delete>
+	
+	<delete id="deleteReviewImage">
+		DELETE FROM TB_REVIEW_IMAGE_LIST
+		WHERE ATCHMNFL_COURS = #{ name }
+	</delete>
+	
+	<update id="updateNumber" parameterType="InsertReviewImg">
+		<foreach collection="originFileList" item="originFileList" open="" separator=";" close="" index="index">
+			UPDATE TB_REVIEW_IMAGE_LIST SET FILE_NO = #{ index }
+			WHERE FILE_NO = (SELECT FILE_NO
+							 FROM (SELECT ROWNUM AS NUM, A.*
+              				 	   FROM TB_REVIEW_IMAGE_LIST A
+              					   WHERE REV_NO = #{ revNo }
+              					   AND R_NO = #{ rNo }
+              
+              					   ) 
+        					 WHERE NUM = #{ index })
+		</foreach>
+	
+	</update>
+	
+	<select id="getRevImgNames" parameterType="_int" resultType="string">
+		SELECT ATCHMNFL_COURS FROM TB_REVIEW_IMAGE_LIST
+		WHERE REV_NO = #{ revNo }
+	</select>
+	
+	<select id="selectFavorCount" parameterType="_int" resultType="_int">
+		SELECT COUNT(*)
+		FROM TB_FAVOR
+		WHERE R_NO = #{ rNo }
+	</select>
+	
+	<insert id="insertFavor" parameterType="Favor">
+		INSERT INTO TB_FAVOR VALUES(#{ rNo }, #{ mNo })
+	</insert>
+	
+	<delete id="deleteFavor" parameterType="Favor">
+		DELETE FROM TB_FAVOR WHERE R_NO = #{ rNo } AND M_NO = #{ mNo }
+	</delete>
+	
+	<select id="selectFavor" parameterType="Favor" resultMap="favorResultSet">
+		SELECT *
+		FROM TB_FAVOR
+		WHERE R_NO = #{ rNo } 
+		AND M_NO = #{ mNo }
+	</select>
+	
+	<insert id="insertResve" parameterType="Reservation">
+		INSERT INTO TB_RESVE VALUES(RESVE_SEQ.NEXTVAL, #{ rsvctm }, #{ rsvde }, #{ rsvtm }, #{ visitrCo }, #{ resveReq }, #{ resvePhone }, #{ rNo }, #{ resveAmount })
+	</insert>
+	
+	<insert id="insertPoint" parameterType="Reservation">
+		INSERT INTO TB_POINT VALUES(POINT_SEQ.NEXTVAL, 1, SYSDATE, #{ resveAmount }, #{ mNo }, RESVE_SEQ.CURRVAL)
+	</insert>
+	
+	<select id="selectResve" parameterType="_int" resultMap="reservationResultSet">
+		SELECT RESVE_NO, RSVCTM, TO_CHAR(RSVDE) AS RSVDE, RSVTM, VISITR_CO, RESVE_REQ, RESVE_PHONE, R_NO, RESVE_AMOUNT
+		FROM TB_RESVE
+		WHERE R_NO = #{ rNo }
+	</select>
+	
+</mapper>
+

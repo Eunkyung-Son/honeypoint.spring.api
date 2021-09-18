@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="jdbcTypeForNull" value="NULL"/>
+	</settings>
+	
+	<typeAliases>		
+		<typeAlias type="com.ek.honeypoint.models.Restaurant" alias="Restaurant"/>
+		<typeAlias type="com.ek.honeypoint.models.Photofile" alias="Photofile"/>
+		<typeAlias type="com.ek.honeypoint.models.RstrntMenu" alias="RstrntMenu"/>
+		<typeAlias type="com.ek.honeypoint.models.Review" alias="Review"/>
+		<typeAlias type="com.ek.honeypoint.models.ReviewCount" alias="ReviewCount"/>
+		<typeAlias type="com.ek.honeypoint.models.ReviewImg" alias="ReviewImg"/>
+		<typeAlias type="com.ek.honeypoint.models.InsertReviewImg" alias="InsertReviewImg"/>
+		<typeAlias type="com.ek.honeypoint.models.UpdateReviewImg" alias="UpdateReviewImg"/>
+		<typeAlias type="com.ek.honeypoint.models.Favor" alias="Favor"/>
+		<typeAlias type="com.ek.honeypoint.models.Reservation" alias="Reservation"/>
+		<typeAlias type="com.ek.honeypoint.models.Settle" alias="Settle"/>
+		
+		<!-- 멤버 -->
+		<typeAlias type="com.ek.honeypoint.member.model.vo.Member" alias="Member"/>
+		<typeAlias type="com.ek.honeypoint.member.model.vo.GnrlMember" alias="GnrlMember"/>
+		<typeAlias type="com.ek.honeypoint.member.model.vo.Restaurant" alias="Restaurant2"/>
+		<typeAlias type="com.ek.honeypoint.member.model.vo.InsertResImg" alias="InsertResImg"/>
+		<typeAlias type="com.ek.honeypoint.member.model.vo.Menu" alias="Menu"/>
+		<typeAlias type="com.ek.honeypoint.member.model.vo.Photofile" alias="Photofile2"/>
+		
+		<!-- 마이페이지 -->
+		<typeAlias type="com.ek.honeypoint.mypage.member.model.vo.ReservePay" alias="ReservePay"/>
+		<typeAlias type="com.ek.honeypoint.mypage.member.model.vo.Post" alias="Post"/>
+		<typeAlias type="com.ek.honeypoint.mypage.member.model.vo.PaidPoint" alias="PaidPoint"/>
+		<typeAlias type="com.ek.honeypoint.mypage.member.model.vo.UsedPoint" alias="UsedPoint"/>
+		
+	</typeAliases>
+	
+	<mappers>
+		<mapper resource="mappers/review-mapper.xml"/>
+		<mapper resource="mappers/restaurant-mapper.xml"/>
+		<mapper resource="mappers/member-mapper.xml"/>
+		<mapper resource="mappers/membermp-mapper.xml"/>
+	</mappers>
+</configuration>

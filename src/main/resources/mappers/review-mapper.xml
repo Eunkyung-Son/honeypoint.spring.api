@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="reviewMapper">
+  <resultMap type="Review" id="reviewResultSet">
+		<id property="revNo" column="REV_NO"/>
+		<result property="rNo" column="R_NO"/>
+		<result property="revCn" column="REV_CN"/>
+		<result property="revDate" column="REV_DATE"/>
+		<result property="score" column="SCORE"/>
+		<result property="revStatus" column="REV_STATUS"/>
+		<result property="mNo" column="M_NO"/>
+		<association property="member" javaType="Member">
+			<result property="mOriginPf" column="M_ORIGIN_PF"/>
+			<result property="mStrePf" column="M_STRE_PF"/>
+		</association>
+		<association property="gnrlMember" javaType="GnrlMember">
+			<result property="mNickname" column="M_NICKNAME"/>
+			<result property="mGrad" column="M_GRAD"/>
+		</association>
+	</resultMap>
+
+  <insert id="insertReview" parameterType="Review">
+		INSERT INTO TB_REVIEW
+            VALUES(RSTRNT_REV_SEQ.NEXTVAL, #{ rNo }, #{ revCn }, SYSDATE, #{ score }, DEFAULT, #{ mNo })
+	</insert>
+
+	<update id="updateReview" parameterType="Review">
+		UPDATE TB_REVIEW SET REV_CN = #{ revCn }, REV_DATE = SYSDATE, SCORE = #{ score }
+		WHERE REV_NO = #{ revNo }
+	</update>
+
+	<update id="deleteReview" parameterType="_int">
+		UPDATE TB_REVIEW SET REV_STATUS = 'N' WHERE REV_NO = #{ revNo }
+	</update>
+
+	<select id="selectReview" parameterType="_int" resultMap="reviewResultSet">
+		SELECT *
+		FROM TB_REVIEW
+		WHERE REV_NO = #{ revNo }
+		AND REV_STATUS = 'Y'
+	</select>
+
+	<select id="getReviewsByRestaurant" parameterType="_int" resultMap="reviewResultSet">
+		SELECT *
+		FROM TB_REVIEW
+		WHERE R_NO = #{restaurantId}
+		AND REV_STATUS = 'Y'
+		ORDER BY REV_NO DESC
+	</select>
+
+	<select id="getReviewsByMember" parameterType="_int" resultMap="reviewResultSet">
+		SELECT *
+		FROM TB_REVIEW
+		WHERE M_NO = ${memberId}
+		AND REV_STATUS = 'Y'
+		ORDER BY REV_NO DESC
+	</select>
+</mapper>

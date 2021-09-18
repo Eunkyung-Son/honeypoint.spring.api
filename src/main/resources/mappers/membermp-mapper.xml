@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="membermpMapper">
+	<resultMap type="Member" id="MemberResultSet">
+		<id property="mNo" column="M_NO" />
+		<result property="mId" column="M_ID" />
+		<result property="mPwd" column="M_PWD" />
+		<result property="mName" column="M_NAME" />
+		<result property="mEmail" column="M_EMAIL" />
+		<result property="mEnrollDate" column="M_ENROLL_DATE" />
+		<result property="mModifyDate" column="M_MODIFY_DATE" />
+		<result property="mStatus" column="M_STATUS" />
+		<result property="rConf" column="R_CONF" />
+		<result property="mOriginPf" column="M_ORIGIN_PF" />
+		<result property="mStrePf" column="M_STRE_PF" />
+		<result property="mNickname" column="M_NICKNAME" />
+		<result property="mBirthday" column="M_BIRTHDAY" />
+		<result property="mPhone" column="M_PHONE" />
+		<result property="mAddress" column="M_ADDRESS" />
+		<result property="mGrad" column="M_GRAD" />
+		<result property="mPoint" column="M_POINT" />
+		<result property="setleDe" column="SETLE_DE"/>
+		<result property="stPrc" column="STPRC"/>
+		<result property="rName" column="R_NAME"/>
+		<result property="rsvDe" column="RSVDE"/>
+		<result property="visitrCo" column="VISITR_CO"/>
+		<result property="resveAmount" column="RESVE_AMOUNT"/>
+		<result property="rName" column="R_NAME"/>
+		<result property="bNo" column="B_NO"/>
+		<result property="bTitle" column="B_TITLE"/>
+		<result property="bEnrollDate" column="B_ENROLL_DATE"/>
+		<result property="bType" column="B_TYPE"/>
+		<result property="bCategory" column="B_CATEGORY"/>
+		<result property="pointDate" column="POINT_DATE"/>
+		<result property="pointHistory" column="POINT_HISTORY"/>
+	</resultMap>
+
+	<select id="getMemberById" parameterType="String" resultMap="MemberResultSet">
+		SELECT *
+		FROM MEM_SORT
+		WHERE M_ID=#{mId}	
+		AND M_STATUS='Y'
+	</select>
+	<!-- 일반회원 정보 변경 -->
+	<select id="selectMemberInfo" parameterType="Member" resultMap="MemberResultSet">
+		SELECT *
+		FROM MEMBER_VIEW
+		WHERE M_NO = #{mNo}		
+	</select>
+	<update id="updateMember" parameterType="Member">
+		UPDATE TB_MEMBER
+		SET
+		(M_NAME, M_NICKNAME, M_PHONE, M_EMAIL, M_ADDRESS, M_BIRTHDAY)
+		= (${mName}, ${mNickname}, ${mPhone}, ${mEmail}, ${mAddress}, ${mBirthday})
+		WHERE
+		M_NO = #{mNo}
+	</update>
+	<update id="updategnrlMember">
+		UPDATE TB_GNRL_MEMBER
+
+		SET M_PHONE = #{mPhone},
+		M_ADDRESS = #{mAddress}
+
+		WHERE
+		M_NO = #{mNo}		
+	</update>
+	<update id="updatemPassWord">
+		UPDATE TB_M_PASSWORD
+
+		SET M_PWD = #{mPwd}
+
+		WHERE
+		M_NO = #{mNo}	
+	</update>
+
+	<!-- 일반회원 탈퇴 -->
+	<update id="deletempMember" parameterType="String">
+		UPDATE TB_MEMBER
+		SET
+		M_STATUS='N'
+		WHERE
+		M_ID = #{mId}	
+	</update>
+
+	<!-- 예약결제내역 조회 -->
+	<select id="selectReservePayListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM TB_RESVE R, TB_RSTRNT_INFO I
+		WHERE R.R_NO = I.R_NO
+	</select>
+
+	<select id="selectReservePayList" resultMap="MemberResultSet">
+		SELECT R.RSVDE, I.R_NAME, R.VISITR_CO, R.RESVE_AMOUNT
+		FROM TB_RESVE R, TB_RSTRNT_INFO I
+		WHERE R.R_NO = I.R_NO
+	</select>
+
+	<!-- 지급된 포인트내역-->
+	<select id="selectPaidPointListCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM TB_SETLE S, TB_RSTRNT_INFO R,
+		TB_GNRL_MEMBER G
+		WHERE R.M_NO = G.M_NO
+		AND G.M_NO = S.M_NO
+		ORDER BY S.SETLE_DE
+	</select>
+	<select id="selectPaidPointList" resultMap="MemberResultSet">
+		SELECT S.SETLE_DE, R.R_NAME, S.STPRC, G.M_POINT
+		FROM TB_SETLE S, TB_RSTRNT_INFO R, TB_GNRL_MEMBER G
+		WHERE R.M_NO = G.M_NO
+		AND G.M_NO = S.M_NO
+		ORDER BY S.SETLE_DE
+	</select>
+	
+	
+	<!-- 사용한 포인트내역 -->
+	<select id="selectUsedPointListCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM TB_SETLE S, TB_POINT P, TB_RSTRNT_INFO R, TB_GNRL_MEMBER G
+		WHERE R.M_NO = G.M_NO
+		AND G.M_NO = S.M_NO
+		AND S.M_NO = P.M_NO
+		ORDER BY P.POINT_DATE	
+	</select>
+	<select id="selectUsedPointList" resultMap="MemberResultSet">
+		SELECT P.POINT_DATE, R.R_NAME, P.POINT_HISTORY, G.M_POINT
+		FROM TB_SETLE S, TB_POINT P, TB_RSTRNT_INFO R, TB_GNRL_MEMBER G
+		WHERE R.M_NO = G.M_NO
+		AND G.M_NO = S.M_NO
+		AND S.M_NO = P.M_NO
+		ORDER BY P.POINT_DATE	
+	</select>
+	
+	
+	<!-- 게시글 조회 -->
+	<select id="selectPostListCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM TB_BOARD B, TB_GNRL_MEMBER G
+		WHERE B.M_NO = G.M_NO
+        ORDER BY B_ENROLL_DATE		
+	</select>
+	<select id="selectPostList" resultMap="MemberResultSet">
+		SELECT B.B_NO, B.B_TITLE, B.B_ENROLL_DATE, B.B_CATEGORY, B.B_TYPE
+		FROM TB_BOARD B, TB_GNRL_MEMBER G
+		WHERE B.M_NO = G.M_NO
+        ORDER BY B_ENROLL_DATE		
+	</select>
+
+</mapper>

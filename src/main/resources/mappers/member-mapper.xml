@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="memberMapper">
+	<resultMap type="Member" id="memberResultSet">
+		<id property="mNo" column="M_NO" />
+		<result property="mId" column="M_ID" />
+		<result property="mPwd" column="M_PWD" />
+		<result property="mName" column="M_NAME" />
+		<result property="mEmail" column="M_EMAIL" />
+		<result property="mEnrollDate" column="M_ENROLL_DATE" />
+		<result property="mModifyDate" column="M_MODIFY_DATE" />
+		<result property="mStatus" column="M_STATUS" />
+		<result property="rConf" column="R_CONF" />
+		<result property="mOriginPf" column="M_ORIGIN_PF" />
+		<result property="mStrePf" column="M_STRE_PF" />
+		<result property="mNickname" column="M_NICKNAME" />
+		<result property="mBirthday" column="M_BIRTHDAY" />
+		<result property="mPhone" column="M_PHONE" />
+		<result property="mAddress" column="M_ADDRESS" />
+		<result property="mGrad" column="M_GRAD" />
+		<result property="mPoint" column="M_POINT" />
+		<result property="mSortNo" column="M_SORT_NO" />
+	</resultMap>
+	<resultMap type="Restaurant2" id="restaurantResultSet">
+		<id property="rNo" column="R_NO"/>
+		<result property="mNo" column="M_NO"/>
+		<result property="mId" column="M_ID" />
+		<result property="mPwd" column="M_PWD" />
+		<result property="mEmail" column="M_EMAIL" />
+		<result property="mEnrollDate" column="M_ENROLL_DATE" />
+		<result property="mModifyDate" column="M_MODIFY_DATE" />
+		<result property="mStatus" column="M_STATUS" />
+		<result property="rConf" column="R_CONF" />
+		<result property="rTel" column="R_TEL"/>
+		<result property="rType" column="R_TYPE"/>
+		<result property="rName" column="R_NAME"/>
+		<result property="rAddress" column="R_ADDRESS"/>
+		<result property="rOAddress" column="R_O_ADDRESS"/>
+		<result property="rTag" column="R_TAG"/>
+		<result property="rPrice" column="R_PRICE"/>
+		<result property="rParking" column="R_PARKING"/>
+		<result property="rStartTime" column="R_START_TIME"/>
+		<result property="rEndTime" column="R_END_TIME"/>
+		<result property="rRating" column="R_RATING"/>
+		<result property="rIntro" column="R_INTRO"/>
+		<result property="resveYn" column="RESVE_YN"/>
+		<result property="rRestDay" column="R_REST_DAY"/>
+		<result property="rConfm" column="R_CONFM"/>
+		<result property="rStatus" column="R_STATUS"/>
+		<result property="rCount" column="R_COUNT"/>
+	</resultMap>
+	
+	<resultMap type="Photofile2" id="photofileResultSet">
+		<id property="photofileId" column="R_PHOTO_FILE_ID"/>
+		<result property="rNo" column="R_NO"/>
+		<result property="originFileName" column="ORIGIN_FILE_NM"/>
+		<result property="streFileName" column="STRE_FILE_NM"/>
+		<result property="imgType" column="IMG_TYPE"/>
+	</resultMap>
+	
+	<resultMap type="Menu" id="MenuResultSet">
+		<id property="menuNo" column="MENU_NO"/>
+		<result property="rNo" column="R_NO"/>
+		<result property="menuName" column="MENU_NAME"/>
+		<result property="menuPrice" column="MENU_PRICE"/>
+	</resultMap>
+
+	<select id="memSort" parameterType="Member" resultMap="memberResultSet">
+		SELECT *
+		FROM MEM_SORT
+		WHERE M_ID=#{mId}	
+		AND M_STATUS='Y'
+	</select>
+
+	
+	<select id="idCheck" parameterType="string" resultType="_int">
+		SELECT COUNT(*)
+		FROM MEM_SORT
+		WHERE M_ID=#{id}
+	</select>
+	
+	<!-- 일반회원 회원가입 -->
+	
+	<insert id="insertBasicMember" parameterType="Member">
+		INSERT INTO TB_MEMBER
+		VALUES (M_SEQ.NEXTVAL,#{mId}, #{mName}, #{mEmail}, SYSDATE, SYSDATE, DEFAULT, DEFAULT, NULL, NULL, 1)
+	</insert>
+	
+	<insert id="insertGnrlMember" parameterType="Member">
+		INSERT INTO TB_GNRL_MEMBER
+		VALUES (M_SEQ.CURRVAL,#{mNickname}, #{mBirthday}, #{mPhone}, #{mAddress}, 1, 0)
+	</insert>
+	
+	<insert id="insertPwdMember" parameterType="Member">
+		INSERT INTO TB_M_PASSWORD
+		VALUES (M_SEQ.CURRVAL,#{mPwd})
+	</insert>
+	
+	<!-- 맛집회원 회원가입 -->
+	
+	<insert id="insertBasicRestaurant" parameterType="Restaurant">
+		INSERT INTO TB_MEMBER
+		VALUES (M_SEQ.NEXTVAL,#{mId}, #{rName}, #{mEmail}, SYSDATE, SYSDATE, DEFAULT, DEFAULT, NULL, NULL, 2)
+	</insert>
+	
+	<insert id="insertRestaurantInfo" parameterType="Restaurant">
+		INSERT INTO TB_RSTRNT_INFO
+		VALUES (R_SEQ.NEXTVAL, M_SEQ.CURRVAL,#{rTel}, #{rType}, #{rName}, #{rAddress}, #{rOAddress}, #{rTag}, #{rPrice}, 
+		#{rParking}, #{rStartTime}, #{rEndTime}, 0 , #{rIntro}, #{resveYn}, #{rRestDay}, DEFAULT, DEFAULT)
+	</insert>
+	
+	<insert id="insertPwdRestaurant" parameterType="Restaurant">
+		INSERT INTO TB_M_PASSWORD
+		VALUES (M_SEQ.CURRVAL,#{mPwd})
+	</insert>
+	
+	<!-- 맛집 이미지, 메뉴 추가 -->
+	
+	<insert id="insertMenu" parameterType="Menu">
+		INSERT INTO TB_RSTRNT_MENU
+		VALUES (R_MENU_SEQ.NEXTVAL,#{rNo}, #{menuName}, #{menuPrice})
+	</insert>
+	
+	<insert id="insertResImg" parameterType="Photofile2">
+		INSERT INTO TB_PHOTOFILES
+		VALUES (R_IMG_SEQ.NEXTVAL, #{rNo}, #{originFileName}, #{streFileName}, DEFAULT)
+	</insert>
+	
+	<select id="selectRno" resultType="_int">
+		SELECT MAX(R_NO)
+		FROM TB_RSTRNT_INFO
+		ORDER BY R_NO DESC
+	</select>
+	
+	<insert id="insertHistory" parameterType="_int">
+		INSERT INTO TB_LOGIN_HISTORY
+		VALUES (SYSDATE,#{mNo},L_SEQ.NEXTVAL)
+	</insert>
+	
+	<select id="findIdByEmail" parameterType="String" resultType="String">
+		SELECT M_ID
+		FROM TB_MEMBER
+		WHERE M_EMAIL = #{email}
+	</select>
+	
+	<select id="countMemberByEmail" parameterType="Member" resultType="_int">
+		SELECT COUNT(*)
+		FROM MEM_SORT
+		WHERE M_EMAIL = #{email}
+		AND M_STATUS = 'Y'
+	</select>
+	
+	<select id="getMemberByEmail" parameterType="Member" resultMap="memberResultSet">
+		SELECT *
+		FROM MEM_SORT
+		WHERE M_EMAIL = #{email}
+		AND M_STATUS = 'Y'
+	</select>
+	
+	<update id="updatePwd" parameterType="Member">
+		UPDATE TB_M_PASSWORD
+		SET M_PWD = #{mPwd} 
+		WHERE M_NO = #{mNo}
+	</update>
+</mapper>
