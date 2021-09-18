@@ -56,7 +56,8 @@ public class RestaurantController {
 		@RequestParam(value = "fetchMenuList", defaultValue = "false") Boolean fetchMenuList,
 		@RequestParam(value = "fetchFavorCount", defaultValue = "false") Boolean fetchFavorCount,
 		@RequestParam(value = "fetchReservation", defaultValue = "false") Boolean fetchReservation,
-		@RequestParam(value = "fetchReviewList", defaultValue = "false") Boolean fetchReviewList
+		@RequestParam(value = "fetchReviewList", defaultValue = "false") Boolean fetchReviewList,
+		@RequestParam(value = "fetchReviewCount", defaultValue = "false") Boolean fetchReviewCount
 	) throws RestaurantException {
 		/**
 		 * 필수항목
@@ -67,6 +68,7 @@ public class RestaurantController {
 		ArrayList<Review> reviewList = null;
 		ArrayList<Reservation> reservationList = null;
 		int favorCount = 0;
+		int reviewCount = 0;
 		HPResponse response = new HPResponse();
 		
 		restaurant = rService.selectRestaurant(restaurantId);
@@ -95,6 +97,10 @@ public class RestaurantController {
 		if (fetchReviewList == true) {
 			reviewList = reviewService.getReviewsByRestaurant(restaurantId);
 			response.put("reviews", reviewList);
+		}
+		if (fetchReviewCount == true) {
+			reviewCount = reviewService.selectReviewCount(restaurantId);
+			response.put("reviewCount", reviewCount);
 		}
 		System.out.print(response);
 		return response;

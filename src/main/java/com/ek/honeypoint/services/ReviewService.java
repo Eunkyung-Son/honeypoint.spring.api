@@ -11,4 +11,5 @@ public interface ReviewService {
   int deleteReview(int revNo);
   ArrayList<Review> getReviewsByRestaurant(int restaurantId);
   ArrayList<Review> getReviewsByMember(int memberId);
+  int selectReviewCount(int restaurantId);
 }

@@ -37,4 +37,8 @@ public class ReviewDao {
   public ArrayList<Review> getReviewsByMember(int memberId) {
     return (ArrayList)sqlSession.selectList("reviewMapper.getReviewsByMember", memberId);
   }
+
+  public int selectReviewCount(int restaurantId) {
+    return sqlSession.selectOne("reviewMapper.selectReviewCount", restaurantId);
+  }
 }
