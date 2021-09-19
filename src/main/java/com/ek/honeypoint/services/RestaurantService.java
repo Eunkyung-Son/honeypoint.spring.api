@@ -3,7 +3,6 @@ package com.ek.honeypoint.services;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.ek.honeypoint.models.Favor;
 import com.ek.honeypoint.models.InsertReviewImg;
 import com.ek.honeypoint.models.Photofile;
 import com.ek.honeypoint.models.Reservation;
@@ -20,6 +19,7 @@ public interface RestaurantService {
 
 	ArrayList<Restaurant> selectRestaurants();
 	ArrayList<Restaurant> selectRestaurants(String restaurantType);
+	ArrayList<Restaurant> selectRestaurants(ArrayList<Integer> restaurantIds);
 
 	int selectImgListCount(int rNo);
 
@@ -46,14 +46,6 @@ public interface RestaurantService {
 	int deleteReviewImage(String string);
 
 	ArrayList<String> getRevImgNames(int revNo);
-
-	int selectFavorCount(int rNo);
-
-	int insertFavor(Favor favor);
-
-	int deleteFavor(Favor favor);
-
-	Favor selectFavor(Favor inputFavor);
 
 	int insertResve(Reservation resve);
 

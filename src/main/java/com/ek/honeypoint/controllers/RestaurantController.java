@@ -23,6 +23,7 @@ import com.ek.honeypoint.models.Review;
 import com.ek.honeypoint.models.ReviewImg;
 import com.ek.honeypoint.models.RstrntMenu;
 import com.ek.honeypoint.models.UpdateReviewImg;
+import com.ek.honeypoint.services.FavorService;
 import com.ek.honeypoint.services.RestaurantService;
 import com.ek.honeypoint.services.ReviewService;
 
@@ -46,6 +47,8 @@ public class RestaurantController {
 	private RestaurantService rService;
 	@Autowired
 	private ReviewService reviewService;
+	@Autowired
+	private FavorService favorService;
 	
 	private Logger logger = LoggerFactory.getLogger(RestaurantController.class);
 	
@@ -83,7 +86,7 @@ public class RestaurantController {
 		// imgList =  rService.selectImgList(rNo);
 		// 선택항목
 		if (fetchFavorCount == true) {
-			favorCount = rService.selectFavorCount(restaurantId);
+			favorCount = favorService.restaurantFavorCount(restaurantId);
 			response.put("favorCount", favorCount);
 		}
 		if (fetchMenuList == true ) {
@@ -500,32 +503,6 @@ public class RestaurantController {
 	// 	return mv;
 
 	// }
-	
-
-	// TODO: 찜하기 컨트롤러 다시 만들기 
-	@RequestMapping("favor.do")
-	public ModelAndView favorControl(ModelAndView mv, Favor favor, int favoriteCount, HttpServletResponse response) {
-		
-		int result;
-		
-		if(favoriteCount % 2 == 1) {
-			result = rService.insertFavor(favor);
-		}else {
-			result = rService.deleteFavor(favor);
-		}
-		
-		if(result != 0) {
-			mv.setViewName("jsonView");
-			
-			response.setContentType("application/json; charset=utf-8");
-			
-			return mv;
-		}else {
-			throw new RestaurantException("찜하기 제어에 실패하였습니다.");
-		}
-		
-	}
-	
 	
 	@RequestMapping("resve.do")
 	public ModelAndView insertResve(Reservation resve, ModelAndView mv, HttpServletResponse response) {

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="favorMapper">
+	<resultMap type="Favor" id="favorResultSet">
+		<result property="rNo" column="R_NO"/>
+		<result property="mNo" column="M_NO"/>
+	</resultMap>
+	
+	<insert id="favor" parameterType="Favor">
+		INSERT INTO TB_FAVOR 
+		VALUES(#{ rNo }, #{ mNo })
+	</insert>
+	
+	<delete id="unFavor" parameterType="Favor">
+		DELETE 
+		FROM TB_FAVOR 
+		WHERE R_NO = #{ rNo } 
+		AND M_NO = #{ mNo }
+	</delete>
+
+	<select id="getMemberFavorList" resultMap="favorResultSet" parameterType="_int">
+		SELECT *
+		FROM TB_FAVOR
+		WHERE M_NO = #{ memberNo }
+	</select>
+
+	<select id="checkFavor" resultMap="favorResultSet" parameterType="Favor">
+		SELECT *
+		FROM TB_FAVOR 
+		WHERE R_NO = #{ rNo } 
+		AND M_NO = #{ mNo }
+	</select>
+
+	<select id="getFavorCount" parameterType="_int" resultType="_int">
+		SELECT COUNT(*)
+		FROM TB_FAVOR
+		WHERE R_NO = #{ rNo }
+	</select>
+</mapper>
+

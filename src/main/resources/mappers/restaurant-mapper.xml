@@ -94,11 +94,6 @@
 		<result property="atchmnflCours" column="ATCHMNFL_COURS"/>
 	</resultMap>
 	
-	<resultMap type="Favor" id="favorResultSet">
-		<result property="rNo" column="R_NO"/>
-		<result property="mNo" column="M_NO"/>
-	</resultMap>
-	
 	<resultMap type="Reservation" id="reservationResultSet">
 		<id property="resveNo" column="RESVE_NO"/>
 		<result property="rsvctm" column="RSVCTM"/>
@@ -134,6 +129,16 @@
 		SELECT *
 		FROM TB_RSTRNT_INFO
 		WHERE R_TYPE=#{restaurantType}
+		AND R_STATUS=1
+	</select>
+
+	<select id="selectAllByIds" parameterType="hashmap" resultMap="restaurantResultSet">
+		SELECT * 
+		FROM TB_RSTRNT_INFO
+		WHERE R_NO IN
+			<foreach item="item" collection="restaurantIds" index="index" open="(" separator="," close=")">
+				${item}
+			</foreach>
 		AND R_STATUS=1
 	</select>
 
@@ -270,28 +275,7 @@
 		SELECT ATCHMNFL_COURS FROM TB_REVIEW_IMAGE_LIST
 		WHERE REV_NO = #{ revNo }
 	</select>
-	
-	<select id="selectFavorCount" parameterType="_int" resultType="_int">
-		SELECT COUNT(*)
-		FROM TB_FAVOR
-		WHERE R_NO = #{ rNo }
-	</select>
-	
-	<insert id="insertFavor" parameterType="Favor">
-		INSERT INTO TB_FAVOR VALUES(#{ rNo }, #{ mNo })
-	</insert>
-	
-	<delete id="deleteFavor" parameterType="Favor">
-		DELETE FROM TB_FAVOR WHERE R_NO = #{ rNo } AND M_NO = #{ mNo }
-	</delete>
-	
-	<select id="selectFavor" parameterType="Favor" resultMap="favorResultSet">
-		SELECT *
-		FROM TB_FAVOR
-		WHERE R_NO = #{ rNo } 
-		AND M_NO = #{ mNo }
-	</select>
-	
+
 	<insert id="insertResve" parameterType="Reservation">
 		INSERT INTO TB_RESVE VALUES(RESVE_SEQ.NEXTVAL, #{ rsvctm }, #{ rsvde }, #{ rsvtm }, #{ visitrCo }, #{ resveReq }, #{ resvePhone }, #{ rNo }, #{ resveAmount })
 	</insert>

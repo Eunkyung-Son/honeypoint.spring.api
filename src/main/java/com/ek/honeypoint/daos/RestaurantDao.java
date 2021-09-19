@@ -42,6 +42,12 @@ public class RestaurantDao {
 		return (ArrayList)sqlSession.selectList("restaurantMapper.selectAllWithType", restaurantType);
 	}
 
+	public ArrayList<Restaurant> selectRestaurants(ArrayList<Integer> restaurantIds) {
+		HashMap<String, ArrayList<Integer>> map = new HashMap<String, ArrayList<Integer>>();
+		map.put("restaurantIds", restaurantIds);
+		return (ArrayList)sqlSession.selectList("restaurantMapper.selectAllByIds", map);
+	}
+
 	public int selectImgListCount(int rNo) {
 		return sqlSession.selectOne("restaurantMapper.selectImgListCount", rNo);
 	}
@@ -130,22 +136,6 @@ public class RestaurantDao {
 
 	public ArrayList<String> getRevImgNames(int revNo) {
 		return (ArrayList)sqlSession.selectList("restaurantMapper.getRevImgNames", revNo);
-	}
-
-	public int selectFavorCount(int rNo) {
-		return sqlSession.selectOne("restaurantMapper.selectFavorCount", rNo);
-	}
-
-	public int insertFavor(Favor favor) {
-		return sqlSession.insert("restaurantMapper.insertFavor", favor);
-	}
-
-	public int deleteFavor(Favor favor) {
-		return sqlSession.delete("restaurantMapper.deleteFavor", favor);
-	}
-
-	public Favor selectFavor(Favor inputFavor) {
-		return sqlSession.selectOne("restaurantMapper.selectFavor", inputFavor);
 	}
 
 	public int insertResve(Reservation resve) {

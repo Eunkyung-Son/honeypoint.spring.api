@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.ek.honeypoint.daos.RestaurantDao;
-import com.ek.honeypoint.models.Favor;
 import com.ek.honeypoint.models.InsertReviewImg;
 import com.ek.honeypoint.models.Photofile;
 import com.ek.honeypoint.models.Reservation;
@@ -36,6 +35,11 @@ public class RestaurantServiceImpl implements RestaurantService {
 	@Override
 	public ArrayList<Restaurant> selectRestaurants(String restaurantType) {
 		return rDao.selectRestaurants(restaurantType);
+	}
+	
+	@Override
+	public ArrayList<Restaurant> selectRestaurants(ArrayList<Integer> restaurantIds) {
+		return rDao.selectRestaurants(restaurantIds);
 	}
 
 	@Override
@@ -105,26 +109,6 @@ public class RestaurantServiceImpl implements RestaurantService {
 	}
 
 	@Override
-	public int selectFavorCount(int rNo) {
-		return rDao.selectFavorCount(rNo);
-	}
-
-	@Override
-	public int insertFavor(Favor favor) {
-		return rDao.insertFavor(favor);
-	}
-
-	@Override
-	public int deleteFavor(Favor favor) {
-		return rDao.deleteFavor(favor);
-	}
-
-	@Override
-	public Favor selectFavor(Favor inputFavor) {
-		return rDao.selectFavor(inputFavor);
-	}
-
-	@Override
 	public int insertResve(Reservation resve) {
 		return rDao.insertResve(resve);
 	}
@@ -138,6 +122,8 @@ public class RestaurantServiceImpl implements RestaurantService {
 	public ArrayList<Reservation> selectReservationList(int rNo) {
 		return rDao.selectResveList(rNo);
 	}
+
+	
 
 
 
