@@ -1,6 +1,7 @@
 package com.ek.honeypoint.daos;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.ek.honeypoint.models.Review;
 
@@ -40,5 +41,12 @@ public class ReviewDao {
 
   public int selectReviewCount(int restaurantId) {
     return sqlSession.selectOne("reviewMapper.selectReviewCount", restaurantId);
+  }
+
+  public ArrayList<Review> selectReviewFilter(int restaurantId, int filterType) {
+    HashMap<String, Integer> map = new HashMap<String, Integer>();
+		map.put("restaurantId", restaurantId);
+		map.put("filterType", filterType);
+    return (ArrayList)sqlSession.selectList("reviewMapper.selectReviewFilter", map);
   }
 }

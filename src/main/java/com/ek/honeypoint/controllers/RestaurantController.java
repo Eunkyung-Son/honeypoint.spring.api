@@ -89,7 +89,7 @@ public class RestaurantController {
 			favorCount = favorService.restaurantFavorCount(restaurantId);
 			response.put("favorCount", favorCount);
 		}
-		if (fetchMenuList == true ) {
+		if (fetchMenuList == true) {
 			menuList = rService.selectMenuList(restaurantId);
 			response.put("menus", menuList);
 		}

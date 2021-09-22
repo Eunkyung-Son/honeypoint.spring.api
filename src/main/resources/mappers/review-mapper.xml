@@ -65,4 +65,15 @@
 		AND REV_STATUS = 'Y'
 		ORDER BY REV_NO DESC		
 	</select>
+
+	<select id="selectReviewFilter" parameterType="_int" resultMap="reviewResultSet">
+		SELECT REV_NO, REV_CN, TO_CHAR(REV_DATE, 'YYYY.MM.DD') AS REV_DATE, SCORE, M_NO, M_ORIGIN_PF, M_STRE_PF, M_NICKNAME, M_GRAD
+		FROM TB_REVIEW
+		JOIN TB_MEMBER USING(M_NO)
+		JOIN TB_GNRL_MEMBER USING(M_NO)
+		WHERE R_NO = #{restaurantId}
+		AND SCORE = #{filterType}
+		AND REV_STATUS = 'Y'
+		ORDER BY REV_NO DESC
+	</select>
 </mapper>

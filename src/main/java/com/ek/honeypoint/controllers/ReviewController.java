@@ -1,5 +1,7 @@
 package com.ek.honeypoint.controllers;
 
+import java.util.ArrayList;
+
 import com.ek.honeypoint.exceptions.ReviewException;
 import com.ek.honeypoint.models.HPResponse;
 import com.ek.honeypoint.models.Review;
@@ -87,6 +89,24 @@ public class ReviewController {
       response.put("msg", "정상적으로 삭제되었습니다");
     } else {
       response.put("msg", "문제가 발생했습니다");
+    }
+    return response;
+  }
+
+  @ResponseBody
+  @GetMapping(value="api/reviews/{restaurantId}")
+  public HPResponse selectReviewFilter(
+    @PathVariable(value = "restaurantId") int restaurantId,
+    @RequestParam(value = "filterType", defaultValue = "0") int filterType
+  ) {
+    ArrayList<Review> reviewList = null;
+    HPResponse response = new HPResponse();
+    if (filterType == 0) {
+      reviewList = reviewService.getReviewsByRestaurant(restaurantId);
+      response.put("reviews", reviewList);
+    } else {
+      reviewList = reviewService.selectReviewFilter(restaurantId, filterType);
+      response.put("reviews", reviewList);
     }
     return response;
   }

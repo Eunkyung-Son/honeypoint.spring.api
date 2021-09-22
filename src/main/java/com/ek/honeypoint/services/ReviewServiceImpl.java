@@ -48,5 +48,10 @@ public class ReviewServiceImpl implements ReviewService {
   public int selectReviewCount(int restaurantId) {
     return reviewDao.selectReviewCount(restaurantId);
   }
+
+  @Override
+  public ArrayList<Review> selectReviewFilter(int restaurantId, int filterType) {
+    return reviewDao.selectReviewFilter(restaurantId, filterType);
+  }
   
 }

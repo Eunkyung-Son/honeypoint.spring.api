@@ -12,4 +12,5 @@ public interface ReviewService {
   ArrayList<Review> getReviewsByRestaurant(int restaurantId);
   ArrayList<Review> getReviewsByMember(int memberId);
   int selectReviewCount(int restaurantId);
+  ArrayList<Review> selectReviewFilter(int restaurantId, int filterType);
 }
