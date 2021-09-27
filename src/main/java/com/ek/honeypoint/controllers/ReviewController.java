@@ -80,6 +80,7 @@ public class ReviewController {
   }
 
   @DeleteMapping(value = "api/review/{reviewId}")
+  @ResponseBody
   public HPResponse deleteReview(
     @PathVariable(value = "reviewId") int reviewNo
   ) {
@@ -107,6 +108,11 @@ public class ReviewController {
     } else {
       reviewList = reviewService.selectReviewFilter(restaurantId, filterType);
       response.put("reviews", reviewList);
+    }
+    if (reviewList.size() > 0) {
+      response.put("total", reviewList.size());
+    } else {
+      response.put("total", 0);
     }
     return response;
   }
