@@ -33,6 +33,9 @@
 		<typeAlias type="com.ek.honeypoint.mypage.member.model.vo.Post" alias="Post"/>
 		<typeAlias type="com.ek.honeypoint.mypage.member.model.vo.PaidPoint" alias="PaidPoint"/>
 		<typeAlias type="com.ek.honeypoint.mypage.member.model.vo.UsedPoint" alias="UsedPoint"/>
+
+		<!-- 게시판 -->
+		<typeAlias type="com.ek.honeypoint.models.Board" alias="Board"/>
 		
 		
 
@@ -44,5 +47,6 @@
 		<mapper resource="mappers/restaurant-mapper.xml"/>
 		<mapper resource="mappers/member-mapper.xml"/>
 		<mapper resource="mappers/membermp-mapper.xml"/>
+		<mapper resource="mappers/board-mapper.xml"/>
 	</mappers>
 </configuration>

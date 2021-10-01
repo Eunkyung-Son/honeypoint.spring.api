@@ -34,8 +34,10 @@ public class ReviewController {
   @PostMapping(value="/api/review/{restaurantId}")
   @ResponseBody
   public HPResponse createReview (
-    @PathVariable(value = "restaurantId") int restaurantNo,
-    @RequestParam(value = "review", required = true) Review review
+    @RequestBody Review review,
+    @PathVariable(value = "restaurantId") int restaurantNo
+
+    // @RequestParam(value = "review", required = true) Review review
     // TODO: Multipart로 받아올지 아니면 다른방식으로 받아올지 정하기
   ) throws ReviewException {
     HPResponse response = new HPResponse();
@@ -50,6 +52,7 @@ public class ReviewController {
 
   // 하나의 리뷰 상세
   @GetMapping(value="api/review/{reviewId}")
+  @ResponseBody
   public HPResponse detailReview(
     @PathVariable(value = "reviewId") int reviewNo
   ) {
