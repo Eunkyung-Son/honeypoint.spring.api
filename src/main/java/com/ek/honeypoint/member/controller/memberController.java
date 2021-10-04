@@ -120,6 +120,7 @@ public class memberController {
 	 */
 	@RequestMapping(value = "restaurantInsert", method = RequestMethod.POST)
 	@ResponseBody
+	@Transactional("transactionManager")
 	public Restaurant resInsert(
 		@RequestBody Restaurant restaurant
 	) {

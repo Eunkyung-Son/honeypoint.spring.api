@@ -8,9 +8,12 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.boot.autoconfigure.SpringBootVFS;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
@@ -45,4 +48,7 @@ public class MyBatisConfig {
         return new SqlSessionTemplate(sqlSessionFactory());
         
     }
+
+    @Bean @Primary public PlatformTransactionManager transactionManager(DataSource masterDataSource) { DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(masterDataSource); transactionManager.setGlobalRollbackOnParticipationFailure(false); return transactionManager; }
+
 }
