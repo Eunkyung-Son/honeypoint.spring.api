@@ -120,7 +120,7 @@ public class RestaurantController {
 		if (restaurantType != "") {
 			restaurants = rService.selectRestaurants(restaurantType);
 		} else {
-			restaurants = rService.selectRestaurants();
+			// restaurants = rService.selectRestaurants();
 		}
 		if (restaurants != null) {
 			response.put("restaurants", restaurants);

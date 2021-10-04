@@ -40,17 +40,44 @@
 		
 	<select id ="selectAll" resultMap="boardResultSet">
 		SELECT *
-		FROM BOARD_VIEW
+		FROM TB_BOARD
 		WHERE B_STATUS ='Y'
 		ORDER BY B_NO DESC
 	</select>
   
 	<select id ="selectAllWithType" parameterType="_int" resultMap="boardResultSet">
 		SELECT *
-		FROM BOARD_VIEW
+		FROM TB_BOARD
 		WHERE B_STATUS ='Y'
 		AND B_TYPE = #{boardType}
 		ORDER BY B_NO DESC
 	</select>
+
+	<select id="searchList" parameterType="hashmap" resultMap="boardResultSet">
+      <!-- <bind name="sv" value="'%' + _parameter.getValue() + '%'"/> sv는 명칭으로 정리한거다 -->
+      <!-- <bind name="bt" value="_parameter.getType()"/> -->
+      SELECT * 
+      FROM BOARD_VIEW
+      <where>
+         <choose>
+            <when test="condition == 'title'">
+               AND B_TITLE LIKE #{value}
+            </when>
+            <when test="condition == 'writer'">
+               AND M_NICKNAME LIKE #{value}
+            </when>
+            <when test="condition == 'content'">
+               AND B_CONTENT LIKE #{value}
+            </when>
+            <otherwise>
+               AND (M_NICKNAME LIKE #{value}
+                   OR B_TITLE LIKE #{value}
+                   OR B_CONTENT LIKE #{value})   
+            </otherwise>
+         </choose>
+      </where>
+      AND B_TYPE = #{boardType}
+      ORDER BY B_NO DESC
+   </select>
 
 </mapper>

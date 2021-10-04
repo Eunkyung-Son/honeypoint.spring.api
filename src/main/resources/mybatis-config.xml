@@ -36,6 +36,7 @@
 
 		<!-- 게시판 -->
 		<typeAlias type="com.ek.honeypoint.models.Board" alias="Board"/>
+		<typeAlias type="com.ek.honeypoint.models.SearchOption" alias="SearchOption"/>
 		
 		
 
