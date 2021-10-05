@@ -108,6 +108,25 @@ public class RestaurantController {
 		System.out.print(response);
 		return response;
 	}
+
+	@GetMapping(value = "/api/restaurantByMember/{memberNo}")
+	@ResponseBody
+	public HPResponse selectRestaurantInfoByMember (
+		@PathVariable(value = "memberNo") int memberNo
+	) throws RestaurantException {
+		HPResponse response = new HPResponse();
+		Restaurant restaurant = null;
+
+		restaurant = rService.selectRestaurantInfoByMember(memberNo);
+
+		if (restaurant != null) {
+			response.put("restaurant", restaurant);
+		} else {
+			throw new RestaurantException("레스토랑 정보 불러오기에 실패하였습니다.");
+		}
+
+		return response;
+	}
 	
 	@GetMapping(value = "/api/restaurants")
 	@ResponseBody

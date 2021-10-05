@@ -289,6 +289,13 @@
 		FROM TB_RESVE
 		WHERE R_NO = #{ rNo }
 	</select>
+
+	<select id="selectRestaurantInfoByMember" parameterType="_int" resultMap="restaurantResultSet">
+		SELECT *
+		FROM TB_RSTRNT_INFO
+		WHERE M_NO=#{memberNo}
+		AND R_STATUS=1
+	</select>
 	
 </mapper>
 

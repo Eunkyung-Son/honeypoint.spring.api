@@ -150,4 +150,8 @@ public class RestaurantDao {
 		return (ArrayList)sqlSession.selectList("restaurantMapper.selectResve", rNo);
 	}
 
+  public Restaurant selectRestaurantInfoByMember(int memberNo) {
+		return sqlSession.selectOne("restaurantMapper.selectRestaurantInfoByMember", memberNo);
+  }
+
 }

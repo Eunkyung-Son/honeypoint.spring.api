@@ -123,7 +123,11 @@ public class RestaurantServiceImpl implements RestaurantService {
 		return rDao.selectResveList(rNo);
 	}
 
-	
+	@Override
+	public Restaurant selectRestaurantInfoByMember(int memberNo) {
+		return rDao.selectRestaurantInfoByMember(memberNo);
+	}
+
 
 
 

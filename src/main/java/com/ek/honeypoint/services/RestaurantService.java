@@ -53,4 +53,6 @@ public interface RestaurantService {
 
 	ArrayList<Reservation> selectReservationList(int rNo);
 
+  Restaurant selectRestaurantInfoByMember(int memberNo);
+
 }
