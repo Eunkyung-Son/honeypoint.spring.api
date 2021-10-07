@@ -61,18 +61,20 @@
       <where>
          <choose>
             <when test="condition == 'title'">
-               AND B_TITLE LIKE #{value}
+               AND B_TITLE LIKE '%'||#{value}||'%'
             </when>
             <when test="condition == 'writer'">
-               AND M_NICKNAME LIKE #{value}
+               AND M_NICKNAME LIKE '%'||#{value}||'%'
             </when>
             <when test="condition == 'content'">
-               AND B_CONTENT LIKE #{value}
+               AND B_CONTENT LIKE '%'||#{value}||'%'
             </when>
             <otherwise>
-               AND (M_NICKNAME LIKE #{value}
-                   OR B_TITLE LIKE #{value}
-                   OR B_CONTENT LIKE #{value})   
+               AND (
+								 		M_NICKNAME LIKE '%'||#{value}||'%'
+                   	OR B_TITLE LIKE '%'||#{value}||'%'
+                   	OR B_CONTENT LIKE '%'||#{value}||'%'
+									 )
             </otherwise>
          </choose>
       </where>

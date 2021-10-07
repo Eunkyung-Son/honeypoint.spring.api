@@ -67,7 +67,7 @@ public class BoardController {
     search.put("condition", options.getCondition());
     search.put("value", options.getValue());
 
-
+    
     boardList = boardService.searchList(search);
     System.out.println(search);
     if (boardList != null) {

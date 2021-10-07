@@ -128,7 +128,4 @@ public class RestaurantServiceImpl implements RestaurantService {
 		return rDao.selectRestaurantInfoByMember(memberNo);
 	}
 
-
-
-
 }

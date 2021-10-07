@@ -3,6 +3,8 @@ package com.ek.honeypoint.controllers;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.print.attribute.standard.Media;
 
@@ -41,16 +43,11 @@ public class FileController {
   
   @PostMapping(value="/api/file/restaurant/{restaurantId}")
   public void addFileOnRestaurant(
-    @RequestPart("file") MultipartFile filePart
+    @PathVariable(value = "restaurantId") String restaurantId,
+    @RequestPart("files") List<MultipartFile> filePart
   ) {
-    System.out.println(filePart.toString());
-    System.out.println(filePart.getName());
-    System.out.println(filePart.getSize());
-    System.out.println(filePart.getResource().getFilename());
-    System.out.println(filePart.getContentType());
-    System.out.println(filePath);
-    File returnFile = fileService.saveFile(filePart, "/honeypoint");
-    System.out.println(returnFile.getName());
+    String path = filePath + "/restaurants" + "/" + restaurantId;
+    ArrayList<File> returnFile = fileService.saveFile(filePart, path);
   }
 
   @GetMapping(value="/api/file/restaurant/{restaurantId}/{fileId}")
