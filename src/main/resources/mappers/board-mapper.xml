@@ -40,14 +40,14 @@
 		
 	<select id ="selectAll" resultMap="boardResultSet">
 		SELECT *
-		FROM TB_BOARD
+		FROM BOARD_VIEW
 		WHERE B_STATUS ='Y'
 		ORDER BY B_NO DESC
 	</select>
   
 	<select id ="selectAllWithType" parameterType="_int" resultMap="boardResultSet">
 		SELECT *
-		FROM TB_BOARD
+		FROM BOARD_VIEW
 		WHERE B_STATUS ='Y'
 		AND B_TYPE = #{boardType}
 		ORDER BY B_NO DESC

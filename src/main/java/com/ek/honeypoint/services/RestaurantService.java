@@ -55,4 +55,6 @@ public interface RestaurantService {
 
   Restaurant selectRestaurantInfoByMember(int memberNo);
 
+  ArrayList<Restaurant> searchRestaurants(String keyword);
+
 }

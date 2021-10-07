@@ -124,7 +124,6 @@ public class RestaurantController {
 		} else {
 			throw new RestaurantException("레스토랑 정보 불러오기에 실패하였습니다.");
 		}
-
 		return response;
 	}
 	
@@ -152,6 +151,29 @@ public class RestaurantController {
 		return response;
 	}
 
+	@GetMapping(value = "/api/searchRestaurants")
+	@ResponseBody
+	public HPResponse searchRestaurants(
+		@RequestParam(value = "keyword", defaultValue = "") String keyword
+	) {
+		//FIXME: 추후에 이미지 파일 필요하다면 JOIN 형태로 들어갈지 파일 컨트롤러 따로 가져올지 정의하기
+		HPResponse response = new HPResponse();
+		ArrayList<Restaurant> restaurants = null;
+		if (keyword != "") {
+			restaurants = rService.searchRestaurants(keyword);
+		} else {
+			// restaurants = rService.selectRestaurants();
+		}
+		if (restaurants != null) {
+			response.put("restaurants", restaurants);
+			
+			int total = restaurants.size();
+			response.put("total", total);
+		} else {
+			throw new RestaurantException("맛집 검색에 실패하였습니다.");
+		}
+		return response;
+	}
 
 	// TODO: 아래는 reviewController 등 다른 컨트롤러로 관리해야함. 코드 이관 전 상태
 

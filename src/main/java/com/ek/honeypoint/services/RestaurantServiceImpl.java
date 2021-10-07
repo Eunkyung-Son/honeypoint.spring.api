@@ -128,4 +128,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 		return rDao.selectRestaurantInfoByMember(memberNo);
 	}
 
+	@Override
+	public ArrayList<Restaurant> searchRestaurants(String keyword) {
+		return rDao.searchRestaurants(keyword);
+	}
+
+
 }

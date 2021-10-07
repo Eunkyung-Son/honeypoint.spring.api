@@ -154,4 +154,8 @@ public class RestaurantDao {
 		return sqlSession.selectOne("restaurantMapper.selectRestaurantInfoByMember", memberNo);
   }
 
+  public ArrayList<Restaurant> searchRestaurants(String keyword) {
+    return (ArrayList)sqlSession.selectList("restaurantMapper.searchRestaurants", keyword);
+  }
+
 }
