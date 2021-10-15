@@ -32,4 +32,8 @@ public class BoardDao {
     return (ArrayList)sqlSession.selectList("boardMapper.selectComments", bNo);
   }
 
+	public int insertComment(Comment comment) {
+		return sqlSession.insert("boardMapper.insertComment", comment);
+	}
+
 }

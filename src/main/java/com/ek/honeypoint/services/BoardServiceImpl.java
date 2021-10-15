@@ -36,4 +36,9 @@ public class BoardServiceImpl implements BoardService{
 		return boardDao.searchList(search);
 	}
 
+  @Override
+  public int insertComment(Comment comment) {
+    return boardDao.insertComment(comment);
+  }
+
 }

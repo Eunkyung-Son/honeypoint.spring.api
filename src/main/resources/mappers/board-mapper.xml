@@ -65,8 +65,6 @@
 	</select>
 
 	<select id="searchList" parameterType="hashmap" resultMap="boardResultSet">
-      <!-- <bind name="sv" value="'%' + _parameter.getValue() + '%'"/> sv는 명칭으로 정리한거다 -->
-      <!-- <bind name="bt" value="_parameter.getType()"/> -->
       SELECT * 
       FROM BOARD_VIEW
       <where>
@@ -100,5 +98,10 @@
 		AND CMT_STATUS='Y'
 		ORDER BY CMT_NO DESC
 	</select>
+
+	<insert id="insertComment" parameterType="Comment">
+		INSERT INTO TB_BOARD_COMMENT 
+		VALUES (C_SEQ.NEXTVAL, #{mNo}, #{bNo}, #{cmtContent}, SYSDATE, SYSDATE, DEFAULT)
+	</insert>
 
 </mapper>

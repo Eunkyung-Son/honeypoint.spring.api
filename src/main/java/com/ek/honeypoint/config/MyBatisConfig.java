@@ -46,9 +46,22 @@ public class MyBatisConfig {
     @Bean
     public SqlSessionTemplate sqlSession() throws Exception {
         return new SqlSessionTemplate(sqlSessionFactory());
-        
     }
 
-    @Bean @Primary public PlatformTransactionManager transactionManager(DataSource masterDataSource) { DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(masterDataSource); transactionManager.setGlobalRollbackOnParticipationFailure(false); return transactionManager; }
+    @Bean 
+    @Primary 
+    public PlatformTransactionManager transactionManager(DataSource masterDataSource) {
+        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(masterDataSource); 
+        transactionManager.setGlobalRollbackOnParticipationFailure(false);
+        return transactionManager; 
+    }
+
+    @Bean 
+    @Primary 
+    public PlatformTransactionManager transactionManager1(DataSource masterDataSource) {
+        DataSourceTransactionManager transactionManager1 = new DataSourceTransactionManager(masterDataSource); 
+        transactionManager1.setGlobalRollbackOnParticipationFailure(false);
+        return transactionManager1; 
+    }
 
 }

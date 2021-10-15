@@ -11,5 +11,6 @@ public interface BoardService {
   ArrayList<Board> selectList(Integer boardType);
   ArrayList<Board> searchList(HashMap<String, Object> search);
   ArrayList<Comment> selectComments(int bNo);
+  int insertComment(Comment comment);
 
 }
