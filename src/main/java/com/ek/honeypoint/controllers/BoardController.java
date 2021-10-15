@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.ek.honeypoint.models.Board;
+import com.ek.honeypoint.models.Comment;
 import com.ek.honeypoint.models.HPResponse;
 import com.ek.honeypoint.models.SearchOption;
 import com.ek.honeypoint.services.BoardService;
@@ -48,7 +49,7 @@ public class BoardController {
     return response;
 	}
 
-  	// 검색 기능
+  // 검색 기능
 	@GetMapping(value="api/searchBoards/{boardType}")
 	@ResponseBody
 	public HPResponse searchBoard (
@@ -81,4 +82,27 @@ public class BoardController {
 
     return response;
 	}
+
+  // 작성 된 글의 댓글 목록 받아오기
+  @GetMapping(value = "/api/comment/{bNo}")
+  @ResponseBody
+  public HPResponse selectComments(
+    @PathVariable(value = "bNo") int bNo
+  ) {
+    HPResponse response = new HPResponse();
+    ArrayList<Comment> comments = null;
+
+    comments = boardService.selectComments(bNo);
+
+    if (comments != null) {
+      response.put("comments", comments);
+
+      int total = comments.size();
+      response.put("total", total);
+    } else {
+      // 에러처리
+    }
+    return response;
+  }
+
 }

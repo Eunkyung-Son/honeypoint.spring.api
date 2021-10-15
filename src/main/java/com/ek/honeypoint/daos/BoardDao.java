@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.ek.honeypoint.models.Board;
+import com.ek.honeypoint.models.Comment;
 import com.ek.honeypoint.models.SearchOption;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -26,5 +27,9 @@ public class BoardDao {
   public ArrayList<Board> searchList(HashMap<String, Object> search) {
 		return (ArrayList)sqlSession.selectList("boardMapper.searchList", search);
 	}
+
+  public ArrayList<Comment> selectComments(int bNo) {
+    return (ArrayList)sqlSession.selectList("boardMapper.selectComments", bNo);
+  }
 
 }

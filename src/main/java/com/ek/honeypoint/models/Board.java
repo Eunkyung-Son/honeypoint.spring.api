@@ -34,7 +34,7 @@ public class Board {
   @JsonProperty("bEnrollDate")
 	private String bEnrollDate;
   @JsonProperty("bModifyDate")
-	private Date bModifyDate;
+	private String bModifyDate;
   @JsonProperty("bCount")
 	private int bCount;
   @JsonProperty("bStatus")

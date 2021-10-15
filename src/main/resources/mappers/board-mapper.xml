@@ -37,6 +37,17 @@
 		<result property="bStatus" column="B_STATUS" />
 	</resultMap>
 	
+	<resultMap type="Comment" id="commentResultSet">
+		<id property="cmtNo" column="CMT_NO" />
+		<result property="mNo" column="M_NO" />
+		<result property="mId" column="M_ID" />
+		<result property="mNickname" column="M_NICKNAME" />
+		<result property="bNo" column="B_NO" />
+		<result property="cmtContent" column="CMT_CONTENT" />
+		<result property="cmtEnrollDate" column="CMT_ENROLL_DATE" />
+		<result property="cmtModifyDate" column="CMT_MODIFY_DATE" />
+		<result property="cmtStatus" column="CMT_STATUS" />
+	</resultMap>
 		
 	<select id ="selectAll" resultMap="boardResultSet">
 		SELECT *
@@ -81,5 +92,13 @@
       AND B_TYPE = #{boardType}
       ORDER BY B_NO DESC
    </select>
+
+	<select id="selectComments" parameterType="_int" resultMap="commentResultSet">
+		SELECT *
+		FROM CMT_VIEW
+		WHERE B_NO=#{bNo}
+		AND CMT_STATUS='Y'
+		ORDER BY CMT_NO DESC
+	</select>
 
 </mapper>

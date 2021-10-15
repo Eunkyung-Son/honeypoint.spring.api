@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.ek.honeypoint.daos.BoardDao;
 import com.ek.honeypoint.models.Board;
+import com.ek.honeypoint.models.Comment;
 import com.ek.honeypoint.models.SearchOption;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,11 @@ public class BoardServiceImpl implements BoardService{
 	public ArrayList<Board> selectList() {
 		return boardDao.selectList();
 	}
+
+  @Override
+  public ArrayList<Comment> selectComments(int bNo) {
+    return boardDao.selectComments(bNo);
+  }
 
   @Override
   public ArrayList<Board> selectList(Integer boardType) {
