@@ -48,6 +48,10 @@ public class memberDao {
 		return sqlSession.selectOne("memberMapper.idCheck", id);
 	}
 
+	public int updatemPassword(Member member) {
+		return sqlSession.update("memberMapper.updatemPassword", member);
+	}
+
 	public int insertMenu(int rNo, String menuName, int menuPrice) {
 		Menu menu = new Menu();
 		menu.setrNo(rNo);

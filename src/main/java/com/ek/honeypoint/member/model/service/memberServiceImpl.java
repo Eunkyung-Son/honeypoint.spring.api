@@ -77,6 +77,13 @@ public class memberServiceImpl implements memberService {
 	}
 
 	@Override
+	public int updatemPassword(Member member) {
+		String encPwd = bcryptPasswordEncoder.encode(member.getmPwd());
+		member.setmPwd(encPwd);
+		return mDao.updatemPassword(member);
+	}
+
+	@Override
 	public int insertResImg(int rNo, String originFileList, String renameFileList) {
 		return mDao.insertResImg(rNo, originFileList,renameFileList);
 	}

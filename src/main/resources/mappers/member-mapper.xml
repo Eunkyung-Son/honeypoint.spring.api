@@ -79,6 +79,15 @@
 		WHERE M_ID=#{id}
 	</select>
 	
+	<update id="updatemPassword">
+		UPDATE TB_M_PASSWORD
+
+		SET M_PWD = #{mPwd}
+
+		WHERE
+		M_NO = #{mNo}	
+	</update>
+
 	<!-- 일반회원 회원가입 -->
 	
 	<insert id="insertBasicMember" parameterType="Member">

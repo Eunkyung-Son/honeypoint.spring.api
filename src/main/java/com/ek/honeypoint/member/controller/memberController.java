@@ -14,6 +14,8 @@ import com.ek.honeypoint.member.model.vo.InsertResImg;
 import com.ek.honeypoint.member.model.vo.Member;
 import com.ek.honeypoint.member.model.vo.Menu;
 import com.ek.honeypoint.member.model.vo.Restaurant;
+import com.ek.honeypoint.models.HPResponse;
+import com.ek.honeypoint.models.PasswordRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 
 @SessionAttributes({ "loginUser", "msg" })
 @RestController
@@ -35,6 +39,9 @@ public class memberController {
 
 	@Autowired
 	private memberService mService;
+
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	private Logger logger = LoggerFactory.getLogger(memberController.class);
 
@@ -88,6 +95,29 @@ public class memberController {
 		// mService.findIdByEmail(email); TODO: 의미가 뭐지?
 	}
 	
+	// 비밀번호 변경
+	@RequestMapping(value = "resetPwd", method = RequestMethod.POST)
+	@ResponseBody
+	@Transactional("transactionManager")
+	public HPResponse resetPwd (
+		@RequestBody PasswordRequest pwdRequest
+	) {
+		System.out.println(pwdRequest.toString());
+		HPResponse response = new HPResponse();
+		Member member = new Member();
+		member.setmId(pwdRequest.getMId());
+		member.setmPwd(pwdRequest.getOldPassword());
+		Member loginUser = mService.loginMember(member);
+		if(loginUser == null || !bCryptPasswordEncoder.matches(pwdRequest.getOldPassword(), loginUser.getmPwd())) {
+			response.put("error", true);
+			response.put("msg", "비밀번호가 일치하지 않습니다");
+			return response;
+		}
+		loginUser.setmPwd(pwdRequest.getNewPassword());
+		mService.updatemPassword(loginUser);
+		return response;
+	}
+
 	/**
 	 * (일반 유저) 회원 가입
 	 * @param member

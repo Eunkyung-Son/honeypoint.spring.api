@@ -27,6 +27,8 @@ public interface memberService {
 	// 4. 아이디 중복 검사를 위한 메소드
 	public int checkIdDup(String id);
 
+	public int updatemPassword(Member member);
+
 	// 메뉴 리스트 추가
 	public int insertMenu(int rNo, String menuName, int menuPrice);
 
