@@ -110,6 +110,25 @@ public class BoardController {
     return response;
   }
 
+  // 게시물 조회
+  @GetMapping(value = "/api/board/{bNo}")
+  @ResponseBody
+  public HPResponse selectBoard(
+    @PathVariable(value = "bNo") int bNo
+  ) {
+    HPResponse response = new HPResponse();
+    Board board = null;
+    
+    board = boardService.selectBoard(bNo);
+
+    if (board != null) {
+      response.put("board", board);
+    } else {
+      // 에러처리
+    }
+    return response;
+  }
+
   // 댓글 쓰기
   @PostMapping(value = "/api/comment/insert")
   @ResponseBody

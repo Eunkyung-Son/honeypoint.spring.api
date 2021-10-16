@@ -64,6 +64,13 @@
 		ORDER BY B_NO DESC
 	</select>
 
+	<select id="selectBoard" parameterType="_int" resultMap="boardResultSet">
+		SELECT *
+		FROM BOARD_VIEW
+		WHERE B_NO=#{bNo}
+		AND B_STATUS='Y'
+	</select>
+
 	<select id="searchList" parameterType="hashmap" resultMap="boardResultSet">
       SELECT * 
       FROM BOARD_VIEW

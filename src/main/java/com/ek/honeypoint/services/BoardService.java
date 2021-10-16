@@ -16,5 +16,6 @@ public interface BoardService {
   Comment selectComment(int commentNo);
   int deleteComment(int commentId);
   int deleteBoard(int boardId);
+  Board selectBoard(int bNo);
 
 }

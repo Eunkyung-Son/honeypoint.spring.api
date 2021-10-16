@@ -52,4 +52,8 @@ public class BoardDao {
     return sqlSession.delete("boardMapper.deleteBoard", boardId);
   }
 
+	public Board selectBoard(int bNo) {
+		return sqlSession.selectOne("boardMapper.selectBoard", bNo);
+	}
+
 }
