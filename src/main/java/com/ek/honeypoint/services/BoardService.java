@@ -12,5 +12,9 @@ public interface BoardService {
   ArrayList<Board> searchList(HashMap<String, Object> search);
   ArrayList<Comment> selectComments(int bNo);
   int insertComment(Comment comment);
+  int updateComment(Comment comment);
+  Comment selectComment(int commentNo);
+  int deleteComment(int commentId);
+  int deleteBoard(int boardId);
 
 }

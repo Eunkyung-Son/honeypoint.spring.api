@@ -36,4 +36,20 @@ public class BoardDao {
 		return sqlSession.insert("boardMapper.insertComment", comment);
 	}
 
+	public int updateComment(Comment comment) {
+		return sqlSession.update("boardMapper.updateComment", comment);
+	}
+
+	public Comment selectComment(int commentNo) {
+		return sqlSession.selectOne("boardMapper.selectComment", commentNo);
+	}
+
+	public int deleteComment(int commentId) {
+		return sqlSession.delete("boardMapper.deleteComment", commentId);
+	}
+
+  public int deleteBoard(int boardId) {
+    return sqlSession.delete("boardMapper.deleteBoard", boardId);
+  }
+
 }

@@ -16,9 +16,11 @@ import org.apache.log4j.spi.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -124,4 +126,59 @@ public class BoardController {
     }
     return comment;
   }
+
+  // 댓글 수정
+  @PutMapping(value = "/api/comment/update")
+  @ResponseBody
+  public HPResponse updatComment(
+    @RequestBody Comment comment
+  ) {
+    HPResponse response = new HPResponse();
+    // Comment comment = null;
+    int result = boardService.updateComment(comment);
+    if (result > 0) {
+      // 코멘트 하나 select 해서 셀렉 결과를 response에 담기
+      comment = boardService.selectComment(comment.getCmtNo());
+      response.put("comment", comment);
+    } else {
+      // 에러처리
+    }
+    return response;
+  }
+
+  // 게시글 수정
+  
+
+  // 댓글 삭제
+  @PostMapping(value = "api/comment/{commentId}")
+  @ResponseBody
+  public HPResponse deleteComment(
+    @PathVariable(value = "commentId") int commentId
+  ) {
+    HPResponse response = new HPResponse();
+    int deleteResult = boardService.deleteComment(commentId);
+    if (deleteResult > 0) {
+      response.put("msg", "정상적으로 삭제되었습니다.");
+    } else {
+      response.put("msg", "댓글 삭제에 실패하였습니다.");
+    }
+    return response;
+  }
+
+  // 게시글 삭제
+  @PostMapping(value = "api/board/{boardId}")
+  @ResponseBody
+  public HPResponse deleteBoard(
+    @PathVariable(value = "boardId") int boardId
+  ) {
+    HPResponse response = new HPResponse();
+    int deleteResult = boardService.deleteBoard(boardId);
+    if (deleteResult > 0) {
+      response.put("msg", "정상적으로 삭제되었습니다.");
+    } else {
+      response.put("msg", "게시글 삭제에 실패하였습니다.");
+    }
+    return response;
+  }
+
 }

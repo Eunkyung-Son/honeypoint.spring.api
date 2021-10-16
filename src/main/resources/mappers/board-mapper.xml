@@ -104,4 +104,31 @@
 		VALUES (C_SEQ.NEXTVAL, #{mNo}, #{bNo}, #{cmtContent}, SYSDATE, SYSDATE, DEFAULT)
 	</insert>
 
+	<select id="selectComment" parameterType="Comment" resultMap="commentResultSet">
+		SELECT *
+		FROM CMT_VIEW
+		WHERE CMT_NO=#{cmtNo}
+		AND CMT_STATUS='Y'
+	</select>
+
+	<update id="updateComment" parameterType="Comment">
+		UPDATE TB_BOARD_COMMENT 
+		SET 
+		CMT_CONTENT = #{cmtContent}, 
+		CMT_MODIFY_DATE = SYSDATE
+		WHERE CMT_NO = #{cmtNo}
+	</update>
+
+	<update id="deleteComment" parameterType="_int">
+		UPDATE TB_BOARD_COMMENT
+		SET CMT_STATUS = 'N'
+		WHERE CMT_NO = #{cmtNo}
+	</update>
+
+	<update id="deleteBoard" parameterType="_int">
+		UPDATE TB_BOARD 
+		SET B_STATUS = 'N'
+		WHERE B_NO = #{bNo}
+	</update>
+
 </mapper>

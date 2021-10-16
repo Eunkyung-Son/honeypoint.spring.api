@@ -41,4 +41,24 @@ public class BoardServiceImpl implements BoardService{
     return boardDao.insertComment(comment);
   }
 
+  @Override
+  public int updateComment(Comment comment) {
+    return boardDao.updateComment(comment);
+  }
+
+  @Override
+  public Comment selectComment(int commentNo) {
+    return boardDao.selectComment(commentNo);
+  }
+
+  @Override
+  public int deleteComment(int commentId) {
+    return boardDao.deleteComment(commentId);
+  }
+
+  @Override
+  public int deleteBoard(int boardId) {
+    return boardDao.deleteBoard(boardId);
+  }
+
 }
