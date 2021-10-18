@@ -49,9 +49,6 @@ public interface memberService {
 
 	Member getMemberByEmail(String email);
 
-
-
-	
-
+  public Member selectMember(int getmNo);
 
 }

@@ -97,4 +97,9 @@ public class memberDao {
 		return sqlSession.update("memberMapper.updatePwd", m);
 	}
 
+
+  public Member selectMemeber(int mNo) {
+    return sqlSession.selectOne("memberMapper.selectMember", mNo);
+  }
+
 }

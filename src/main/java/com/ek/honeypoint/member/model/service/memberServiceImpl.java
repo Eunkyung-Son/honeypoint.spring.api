@@ -39,6 +39,11 @@ public class memberServiceImpl implements memberService {
 	}
 
 	@Override
+	public Member selectMember(int mNo) {
+		return mDao.selectMemeber(mNo);
+	}
+
+	@Override
 	public int insertBasicMember(Member member) {
 		return mDao.insertBasicMember(member);
 	}
@@ -207,7 +212,6 @@ public class memberServiceImpl implements memberService {
 		}
 		
 	}
-
 
 }
 

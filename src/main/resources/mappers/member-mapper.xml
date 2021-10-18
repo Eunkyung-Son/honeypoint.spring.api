@@ -120,14 +120,14 @@
 	
 	<insert id="insertPwdRestaurant" parameterType="Restaurant">
 		INSERT INTO TB_M_PASSWORD
-		VALUES (M_SEQ.CURRVAL,#{mPwd})
+		VALUES (M_SEQ.CURRVAL, #{mPwd})
 	</insert>
 	
 	<!-- 맛집 이미지, 메뉴 추가 -->
 	
 	<insert id="insertMenu" parameterType="Menu">
 		INSERT INTO TB_RSTRNT_MENU
-		VALUES (R_MENU_SEQ.NEXTVAL,#{rNo}, #{menuName}, #{menuPrice})
+		VALUES (R_MENU_SEQ.NEXTVAL, #{rNo}, #{menuName}, #{menuPrice})
 	</insert>
 	
 	<insert id="insertResImg" parameterType="Photofile2">
@@ -143,7 +143,7 @@
 	
 	<insert id="insertHistory" parameterType="_int">
 		INSERT INTO TB_LOGIN_HISTORY
-		VALUES (SYSDATE,#{mNo},L_SEQ.NEXTVAL)
+		VALUES (SYSDATE, #{mNo}, L_SEQ.NEXTVAL)
 	</insert>
 	
 	<select id="findIdByEmail" parameterType="String" resultType="String">
@@ -171,4 +171,12 @@
 		SET M_PWD = #{mPwd} 
 		WHERE M_NO = #{mNo}
 	</update>
+
+	<select id="selectMember" parameterType="Member" resultMap="memberResultSet">
+		SELECT A.M_ADDRESS, A.M_BIRTHDAY, A.M_EMAIL, A.M_ID, A.M_ENROLL_DATE, A.M_MODIFY_DATE, A.M_NAME, A.M_NICKNAME, A.M_NO, A.M_PHONE, A.M_PWD, B.M_SORT_NO, A.M_STATUS
+		FROM MEMBER_VIEW A
+		JOIN MEM_SORT B
+		ON A.M_NO = B.M_NO
+		WHERE A.M_NO = #{mNo}
+	</select>
 </mapper>
