@@ -76,7 +76,13 @@
 	<select id="idCheck" parameterType="string" resultType="_int">
 		SELECT COUNT(*)
 		FROM MEM_SORT
-		WHERE M_ID=#{id}
+		WHERE M_ID = #{id}
+	</select>
+
+	<select id="emailCheck" parameterType="string" resultType="_int">
+		SELECT COUNT(*)
+		FROM MEM_SORT
+		WHERE M_EMAIL = #{mEmail}
 	</select>
 	
 	<update id="updatemPassword">

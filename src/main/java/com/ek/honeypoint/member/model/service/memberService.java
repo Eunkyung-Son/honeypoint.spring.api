@@ -51,4 +51,6 @@ public interface memberService {
 
   public Member selectMember(int getmNo);
 
+  public int checkEmailDup(String email);
+
 }

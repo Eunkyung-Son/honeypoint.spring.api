@@ -82,6 +82,11 @@ public class memberServiceImpl implements memberService {
 	}
 
 	@Override
+	public int checkEmailDup(String email) {
+		return mDao.checkEmailDup(email);
+	}
+
+	@Override
 	public int updatemPassword(Member member) {
 		String encPwd = bcryptPasswordEncoder.encode(member.getmPwd());
 		member.setmPwd(encPwd);

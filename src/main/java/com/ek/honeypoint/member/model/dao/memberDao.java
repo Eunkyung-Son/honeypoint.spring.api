@@ -48,6 +48,10 @@ public class memberDao {
 		return sqlSession.selectOne("memberMapper.idCheck", id);
 	}
 
+  public int checkEmailDup(String email) {
+    return sqlSession.selectOne("memberMapper.emailCheck", email);
+  }
+
 	public int updatemPassword(Member member) {
 		return sqlSession.update("memberMapper.updatemPassword", member);
 	}
@@ -73,7 +77,6 @@ public class memberDao {
 	public int selectRno() {
 		return sqlSession.selectOne("memberMapper.selectRno");
 	}
-
 
 	public int insertHistory(Member loginUser) {
 		

@@ -57,17 +57,12 @@ public class memberController {
 	) {
 		HPResponse response = new HPResponse();
 		member = mService.loginMember(member);
-		// int result = mService.loginHistory(loginUser);
-		System.out.println("loginUser" + member);
-		System.out.println("member" + member);
 		if (member != null) {
-			System.out.println("loginUser"+ member.getmNo());
-			System.out.println("loginUser"+ member);
 			member = mService.selectMember(member.getmNo());
-			System.out.println("user info" + member);
 			response.put("member", member);
 		} else {
-			throw new memberException("로그인에 실패하였습니다");
+			response.put("error", true);
+			response.put("msg", "로그인에 실패하였습니다.");			
 		}
 		return response;
 	}
@@ -184,6 +179,20 @@ public class memberController {
 		@RequestParam("id") String id
 	) {
 		boolean isUsable = mService.checkIdDup(id) == 0 ? true : false;
+		return isUsable;
+	}
+
+	/**
+	 * 이메일 중복확인
+	 * @param email 아이디
+	 * @return 사용가능한지에 대한 true / false
+	 */
+	@RequestMapping(value = "emailCheck", method = RequestMethod.GET)
+	@ResponseBody
+	public Boolean emailDuplicateCheck(
+		@RequestParam("email") String email
+	) {
+		boolean isUsable = mService.checkEmailDup(email) == 0 ? true : false;
 		return isUsable;
 	}
 
