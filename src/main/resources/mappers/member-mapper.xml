@@ -87,11 +87,15 @@
 	
 	<update id="updatemPassword">
 		UPDATE TB_M_PASSWORD
-
 		SET M_PWD = #{mPwd}
+		WHERE M_NO = #{mNo}	
+	</update>
 
-		WHERE
-		M_NO = #{mNo}	
+	<!-- 일반회원 탈퇴 -->
+	<update id="deleteMember" parameterType="String">
+		UPDATE TB_MEMBER
+		SET M_STATUS='N'
+		WHERE M_ID = #{mId}
 	</update>
 
 	<!-- 일반회원 회원가입 -->

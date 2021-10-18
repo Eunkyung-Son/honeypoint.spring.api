@@ -21,7 +21,6 @@ public class memberDao {
 		return sqlSession.selectOne("memberMapper.memSort",member);
 	}
 	
-	
 	public int insertBasicMember(Member member) {
 		return sqlSession.insert("memberMapper.insertBasicMember", member);
 	}
@@ -31,7 +30,6 @@ public class memberDao {
 	public int insertPwdMember(Member member) {
 		return sqlSession.insert("memberMapper.insertPwdMember", member);
 	}
-	
 	
 	public int insertBasicRestaurant(Restaurant restaurant) {
 		return sqlSession.insert("memberMapper.insertBasicRestaurant", restaurant);
@@ -43,7 +41,6 @@ public class memberDao {
 		return sqlSession.insert("memberMapper.insertPwdRestaurant", restaurant);
 	}
 
-	
 	public int checkIdDup(String id) {
 		return sqlSession.selectOne("memberMapper.idCheck", id);
 	}
@@ -100,9 +97,12 @@ public class memberDao {
 		return sqlSession.update("memberMapper.updatePwd", m);
 	}
 
-
   public Member selectMemeber(int mNo) {
     return sqlSession.selectOne("memberMapper.selectMember", mNo);
   }
+
+	public int deleteMember(String memberId) {
+		return sqlSession.update("memberMapper.deleteMember", memberId);
+	}
 
 }

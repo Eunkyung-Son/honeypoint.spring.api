@@ -53,4 +53,6 @@ public interface memberService {
 
   public int checkEmailDup(String email);
 
+  public int deleteMember(String memberId);
+
 }

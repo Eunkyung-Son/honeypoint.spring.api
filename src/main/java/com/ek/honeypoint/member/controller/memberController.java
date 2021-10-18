@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -105,7 +106,6 @@ public class memberController {
 	public HPResponse resetPwd (
 		@RequestBody PasswordRequest pwdRequest
 	) {
-		System.out.println(pwdRequest.toString());
 		HPResponse response = new HPResponse();
 		Member member = new Member();
 		member.setmId(pwdRequest.getMId());
@@ -118,6 +118,23 @@ public class memberController {
 		}
 		loginUser.setmPwd(pwdRequest.getNewPassword());
 		mService.updatemPassword(loginUser);
+		return response;
+	}
+
+	// 일반회원 탈퇴
+	@RequestMapping(value = "api/member/delete/{memberId}", method = RequestMethod.POST)
+	@ResponseBody
+	public HPResponse deleteMember (
+		@PathVariable(value = "memberId") String memberId
+	) {
+		HPResponse response = new HPResponse();
+		int deleteResult = mService.deleteMember(memberId);
+		if (deleteResult > 0) {
+			response.put("msg", "탈퇴가 완료되었습니다.");
+		} else {
+			response.put("error", true);
+			response.put("msg", "회원 탈퇴에 실패하였습니다");
+		}
 		return response;
 	}
 
@@ -184,7 +201,7 @@ public class memberController {
 
 	/**
 	 * 이메일 중복확인
-	 * @param email 아이디
+	 * @param email 이메일
 	 * @return 사용가능한지에 대한 true / false
 	 */
 	@RequestMapping(value = "emailCheck", method = RequestMethod.GET)

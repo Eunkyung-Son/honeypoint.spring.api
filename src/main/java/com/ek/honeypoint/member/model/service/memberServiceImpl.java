@@ -74,6 +74,11 @@ public class memberServiceImpl implements memberService {
 		restaurant.setmPwd(encPwd);
 		return mDao.insertPwdRestaurant(restaurant);
 	}
+
+	@Override
+	public int deleteMember(String memberId) {
+		return mDao.deleteMember(memberId);
+	}
 	
 	
 	@Override
