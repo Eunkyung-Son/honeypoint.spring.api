@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 
 
@@ -67,9 +69,9 @@ public class ReviewController {
 
   // TODO: 파일 수정에 대해선 어떻게 할지 고민해볼것 패치 받은 리뷰 이미지 리스트에서 건네준 아이디 배열에서 수정만 할지, 추가할거 있으면 할지 
   // PUT메서드는 tomcat에서 body를 파싱하지 않는다 ..
-  @PutMapping(value="api/review/{reviewId}")
+  @PostMapping(value="api/review/update")
+  @ResponseBody
   public HPResponse updateReview(
-    @PathVariable(value = "reviewId") int reviewNo,
     @RequestBody Review review
   ) {
       HPResponse response = new HPResponse();
@@ -90,8 +92,10 @@ public class ReviewController {
     HPResponse response = new HPResponse();
     int deleteResult = reviewService.deleteReview(reviewNo);
     if (deleteResult > 0) {
+      response.put("error", false);
       response.put("msg", "정상적으로 삭제되었습니다");
     } else {
+      response.put("error", true);
       response.put("msg", "문제가 발생했습니다");
     }
     return response;
