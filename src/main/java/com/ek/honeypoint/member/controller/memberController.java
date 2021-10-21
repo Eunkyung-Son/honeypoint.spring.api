@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -121,6 +122,29 @@ public class memberController {
 		return response;
 	}
 
+	// 일반회원 회원 정보 수정
+	@RequestMapping(value = "api/member/general/update/{mNo}", method = RequestMethod.POST)
+	@ResponseBody
+	public HPResponse updateMember (
+		@RequestBody Member member,
+		@PathVariable(value = "mNo") int mNo
+	) {
+		member.setmNo(mNo);
+		System.out.println(member+ "memberInfo!!");
+		HPResponse response = new HPResponse();
+		int updateMemberResult = mService.updateMember(member);
+		int updateGeneralMemeberResult = mService.updateGeneralMember(member);
+		if (updateMemberResult > 0 && updateGeneralMemeberResult > 0) {
+			response.put("msg", "회원 정보 변경이 완료되었습니다.");
+			member = mService.selectMember(member.getmNo());
+			response.put("member", member);
+		} else {
+			response.put("error", true);
+			response.put("msg", "회원 정보 변경에 실패하였습니다.");
+		}
+		return response;
+	}
+
 	// 일반회원 탈퇴
 	@RequestMapping(value = "api/member/delete/{memberId}", method = RequestMethod.POST)
 	@ResponseBody
@@ -133,7 +157,7 @@ public class memberController {
 			response.put("msg", "탈퇴가 완료되었습니다.");
 		} else {
 			response.put("error", true);
-			response.put("msg", "회원 탈퇴에 실패하였습니다");
+			response.put("msg", "회원 탈퇴에 실패하였습니다.");
 		}
 		return response;
 	}

@@ -44,6 +44,16 @@ public class memberServiceImpl implements memberService {
 	}
 
 	@Override
+	public int updateMember(Member member) {
+		return mDao.updateMember(member);
+	}
+
+	@Override
+	public int updateGeneralMember(Member member) {
+		return mDao.updateGeneralMember(member);
+	}
+
+	@Override
 	public int insertBasicMember(Member member) {
 		return mDao.insertBasicMember(member);
 	}

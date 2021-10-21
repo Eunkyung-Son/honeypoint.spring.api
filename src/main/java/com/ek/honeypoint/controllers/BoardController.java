@@ -147,7 +147,7 @@ public class BoardController {
   }
 
   // 댓글 수정
-  @PutMapping(value = "/api/comment/update")
+  @PostMapping(value = "/api/comment/update")
   @ResponseBody
   public HPResponse updatComment(
     @RequestBody Comment comment

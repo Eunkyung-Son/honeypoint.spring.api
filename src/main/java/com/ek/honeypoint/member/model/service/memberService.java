@@ -55,4 +55,8 @@ public interface memberService {
 
   public int deleteMember(String memberId);
 
+  public int updateMember(Member member);
+
+  public int updateGeneralMember(Member member);
+
 }

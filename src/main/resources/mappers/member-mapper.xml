@@ -73,13 +73,13 @@
 	</select>
 
 	
-	<select id="idCheck" parameterType="string" resultType="_int">
+	<select id="idCheck" parameterType="string">
 		SELECT COUNT(*)
 		FROM MEM_SORT
 		WHERE M_ID = #{id}
 	</select>
 
-	<select id="emailCheck" parameterType="string" resultType="_int">
+	<select id="emailCheck" parameterType="string">
 		SELECT COUNT(*)
 		FROM MEM_SORT
 		WHERE M_EMAIL = #{mEmail}
@@ -98,8 +98,29 @@
 		WHERE M_ID = #{mId}
 	</update>
 
-	<!-- 일반회원 회원가입 -->
-	
+	<!-- 일반회원 정보 변경 -->
+	<update id="updateMember">
+		UPDATE TB_MEMBER
+		SET
+		M_EMAIL = #{mEmail},
+		M_NAME = #{mName}
+
+		WHERE
+		M_NO = #{mNo}		
+	</update>
+	<update id="updateGeneralMember">
+		UPDATE TB_GNRL_MEMBER
+
+		SET M_PHONE = #{mPhone},
+		M_ADDRESS = #{mAddress},
+		M_BIRTHDAY = #{mBirthday},
+		M_NICKNAME = #{mNickname}
+
+		WHERE
+		M_NO = #{mNo}		
+	</update>
+
+	<!-- 일반회원 회원가입 -->	
 	<insert id="insertBasicMember" parameterType="Member">
 		INSERT INTO TB_MEMBER
 		VALUES (M_SEQ.NEXTVAL,#{mId}, #{mName}, #{mEmail}, SYSDATE, SYSDATE, DEFAULT, DEFAULT, NULL, NULL, 1)

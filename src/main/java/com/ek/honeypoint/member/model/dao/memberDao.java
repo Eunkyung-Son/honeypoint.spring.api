@@ -105,4 +105,12 @@ public class memberDao {
 		return sqlSession.update("memberMapper.deleteMember", memberId);
 	}
 
+  public int updateMember(Member member) {
+    return sqlSession.update("memberMapper.updateMember", member);
+  }
+
+	public int updateGeneralMember(Member member) {
+		return sqlSession.update("memberMapper.updateGeneralMember", member);
+	}
+
 }
