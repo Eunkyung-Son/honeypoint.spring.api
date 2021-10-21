@@ -47,7 +47,7 @@
 		JOIN TB_GNRL_MEMBER USING(M_NO)
 		WHERE R_NO = #{restaurantId}
 		AND REV_STATUS = 'Y'
-		ORDER BY REV_NO DESC
+		ORDER BY REV_DATE DESC
 	</select>
 
 	<select id="getReviewsByMember" parameterType="_int" resultMap="reviewResultSet">

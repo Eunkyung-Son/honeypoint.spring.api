@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,11 +34,11 @@ public class ReviewController {
 
   // create review on Restaurant
   // FIXME: 이미지파일은 파일컨트롤러 만들어지면 다시
-  @PostMapping(value="/api/review/{restaurantId}")
+  @PostMapping(value="/api/review/insert")
   @ResponseBody
+  @Transactional("transactionManager1")
   public HPResponse createReview (
-    @RequestBody Review review,
-    @PathVariable(value = "restaurantId") int restaurantNo
+    @RequestBody Review review
 
     // @RequestParam(value = "review", required = true) Review review
     // TODO: Multipart로 받아올지 아니면 다른방식으로 받아올지 정하기
