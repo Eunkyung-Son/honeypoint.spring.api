@@ -22,23 +22,43 @@ public class BoardServiceImpl implements BoardService{
 	}
 
   @Override
-  public ArrayList<Comment> selectComments(int bNo) {
-    return boardDao.selectComments(bNo);
-  }
-
-  @Override
-  public ArrayList<Board> selectList(Integer boardType) {
+  public ArrayList<Board> selectList(int boardType) {
     return boardDao.selectList(boardType);
   }
 
   @Override
-	public ArrayList<Board> searchList(HashMap<String, Object> search) {
-		return boardDao.searchList(search);
-	}
-
-  @Override
   public Board selectBoard(int bNo) {
     return boardDao.selectBoard(bNo);
+  }
+
+  @Override
+  public ArrayList<Board> searchList(HashMap<String, Object> search) {
+    return boardDao.searchList(search);
+  }
+
+  @Override
+  public ArrayList<Comment> selectComments(int bNo) {
+    return boardDao.selectComments(bNo);
+  }
+  
+  @Override
+  public int insertBoard(Board board) {
+    return boardDao.insertBoard(board);
+  }
+
+  @Override
+  public int updateBoard(Board board) {
+    return boardDao.updateBoard(board);
+  }
+  
+  @Override
+  public int deleteBoard(int boardId) {
+    return boardDao.deleteBoard(boardId);
+  }
+
+  @Override
+  public Comment selectComment(int commentNo) {
+    return boardDao.selectComment(commentNo);
   }
 
   @Override
@@ -52,18 +72,8 @@ public class BoardServiceImpl implements BoardService{
   }
 
   @Override
-  public Comment selectComment(int commentNo) {
-    return boardDao.selectComment(commentNo);
-  }
-
-  @Override
   public int deleteComment(int commentId) {
     return boardDao.deleteComment(commentId);
-  }
-
-  @Override
-  public int deleteBoard(int boardId) {
-    return boardDao.deleteBoard(boardId);
   }
 
 }

@@ -30,6 +30,7 @@ public class BoardController {
   @Autowired
   private BoardService boardService;
 
+  // 게시물 목록
   @GetMapping(value="api/boards")
   @ResponseBody
 	public HPResponse boardList (
@@ -49,12 +50,87 @@ public class BoardController {
       int total = boardList.size();
       response.put("total", total);
     } else {
-      // throw new boardException("게시글 목록 조회에 실패하였습니다");
+      response.put("error", true);
+      response.put("msg", "게시글 목록 조회에 실패하였습니다.");
     }
     return response;
 	}
 
-  // 검색 기능
+  // 게시물 조회
+  @GetMapping(value = "/api/board/{bNo}")
+  @ResponseBody
+  public HPResponse selectBoard(
+    @PathVariable(value = "bNo") int bNo
+  ) {
+    HPResponse response = new HPResponse();
+    Board board = null;
+    
+    board = boardService.selectBoard(bNo);
+
+    if (board != null) {
+      response.put("board", board);
+    } else {
+      response.put("error", true);
+      response.put("msg", "게시물 조회에 실패하였습니다.");
+    }
+    return response;
+  }
+
+  // 게시물 등록
+  @PostMapping(value = "/api/board/insert")
+  @ResponseBody
+  @Transactional("transactionManager")
+  public Board insertBoard(
+    @RequestBody Board board
+  ) {
+    System.out.println("^^Board^^" + board);
+    HPResponse response = new HPResponse();
+    int insertResult = boardService.insertBoard(board);
+    System.out.println("####insertResult###" + insertResult);
+    if (insertResult > 0) {
+      return board;
+    } else {
+      response.put("error", true);
+      response.put("msg", "게시물 등록에 실패하였습니다.");
+    }
+    return board;
+  }
+
+  // 게시글 수정
+  @PostMapping(value = "api/board/update")
+  @ResponseBody
+  public HPResponse updatbBoard(
+    @RequestBody Board board
+  ) {
+    HPResponse response = new HPResponse();
+    int result = boardService.updateBoard(board);
+    if (result > 0) {
+      board = boardService.selectBoard(board.getBNo());
+      response.put("comment", board);
+    } else {
+      response.put("error", true);
+      response.put("msg", "게시물 수정에 실패하였습니다.");
+    }
+    return response;
+  }
+
+  // 게시글 삭제
+  @PostMapping(value = "api/board/{boardId}")
+  @ResponseBody
+  public HPResponse deleteBoard(
+    @PathVariable(value = "boardId") int boardId
+  ) {
+    HPResponse response = new HPResponse();
+    int deleteResult = boardService.deleteBoard(boardId);
+    if (deleteResult > 0) {
+      response.put("msg", "정상적으로 삭제되었습니다.");
+    } else {
+      response.put("msg", "게시글 삭제에 실패하였습니다.");
+    }
+    return response;
+  }
+
+  // 게시물 검색
 	@GetMapping(value="api/searchBoards/{boardType}")
 	@ResponseBody
 	public HPResponse searchBoard (
@@ -73,16 +149,15 @@ public class BoardController {
     search.put("condition", options.getCondition());
     search.put("value", options.getValue());
 
-    
     boardList = boardService.searchList(search);
-    System.out.println(search);
     if (boardList != null) {
       response.put("boards", boardList);
 
       int total = boardList.size();
       response.put("total", total);
     } else {
-      // throw new boardException("게시글 목록 조회에 실패하였습니다");
+      response.put("error", true);
+      response.put("msg", "게시글 검색에 실패하였습니다.");
     }
 
     return response;
@@ -105,26 +180,8 @@ public class BoardController {
       int total = comments.size();
       response.put("total", total);
     } else {
-      // 에러처리
-    }
-    return response;
-  }
-
-  // 게시물 조회
-  @GetMapping(value = "/api/board/{bNo}")
-  @ResponseBody
-  public HPResponse selectBoard(
-    @PathVariable(value = "bNo") int bNo
-  ) {
-    HPResponse response = new HPResponse();
-    Board board = null;
-    
-    board = boardService.selectBoard(bNo);
-
-    if (board != null) {
-      response.put("board", board);
-    } else {
-      // 에러처리
+      response.put("error", true);
+      response.put("msg", "댓글 조회에 실패하였습니다.");
     }
     return response;
   }
@@ -136,12 +193,14 @@ public class BoardController {
   public Comment insertComment(
     @RequestBody Comment comment
   ) {
-    int result = boardService.insertComment(comment);
+    HPResponse response = new HPResponse();
+    int insertResult = boardService.insertComment(comment);
 
-    if (result > 0) {
+    if (insertResult > 0) {
       return comment;
     } else {
-      // 에러처리
+      response.put("error", true);
+      response.put("msg", "댓글 등록에 실패하였습니다.");    
     }
     return comment;
   }
@@ -160,13 +219,11 @@ public class BoardController {
       comment = boardService.selectComment(comment.getCmtNo());
       response.put("comment", comment);
     } else {
-      // 에러처리
+      response.put("error", true);
+      response.put("msg", "댓글 수정에 실패하였습니다.");
     }
     return response;
   }
-
-  // 게시글 수정
-  
 
   // 댓글 삭제
   @PostMapping(value = "api/comment/{commentId}")
@@ -179,23 +236,8 @@ public class BoardController {
     if (deleteResult > 0) {
       response.put("msg", "정상적으로 삭제되었습니다.");
     } else {
+      response.put("error", true);
       response.put("msg", "댓글 삭제에 실패하였습니다.");
-    }
-    return response;
-  }
-
-  // 게시글 삭제
-  @PostMapping(value = "api/board/{boardId}")
-  @ResponseBody
-  public HPResponse deleteBoard(
-    @PathVariable(value = "boardId") int boardId
-  ) {
-    HPResponse response = new HPResponse();
-    int deleteResult = boardService.deleteBoard(boardId);
-    if (deleteResult > 0) {
-      response.put("msg", "정상적으로 삭제되었습니다.");
-    } else {
-      response.put("msg", "게시글 삭제에 실패하였습니다.");
     }
     return response;
   }

@@ -52,14 +52,14 @@
 	<select id ="selectAll" resultMap="boardResultSet">
 		SELECT *
 		FROM BOARD_VIEW
-		WHERE B_STATUS ='Y'
+		WHERE B_STATUS = 'Y'
 		ORDER BY B_NO DESC
 	</select>
   
 	<select id ="selectAllWithType" parameterType="_int" resultMap="boardResultSet">
 		SELECT *
 		FROM BOARD_VIEW
-		WHERE B_STATUS ='Y'
+		WHERE B_STATUS = 'Y'
 		AND B_TYPE = #{boardType}
 		ORDER BY B_NO DESC
 	</select>
@@ -67,9 +67,30 @@
 	<select id="selectBoard" parameterType="_int" resultMap="boardResultSet">
 		SELECT *
 		FROM BOARD_VIEW
-		WHERE B_NO=#{bNo}
-		AND B_STATUS='Y'
+		WHERE B_NO = #{bNo}
+		AND B_STATUS = 'Y'
 	</select>
+
+	<update id="updateBoard" parameterType="Board">
+		UPDATE TB_BOARD 
+		SET 
+		B_CATEGORY = #{bCategory},
+		B_TITLE = #{bTitle},
+		B_CONTENT = #{bContent}, 
+		B_MODIFY_DATE = SYSDATE
+		WHERE B_NO = #{bNo}
+	</update>
+
+	<insert id="insertBoard" parameterType="Board">
+		INSERT INTO TB_BOARD 
+		VALUES(B_SEQ.NEXTVAL, #{mNo}, #{bType}, #{bCategory}, #{bTitle}, #{bContent}, SYSDATE, SYSDATE, 0, DEFAULT)
+	</insert>
+
+	<update id="deleteBoard" parameterType="_int">
+		UPDATE TB_BOARD 
+		SET B_STATUS = 'N'
+		WHERE B_NO = #{bNo}
+	</update>
 
 	<select id="searchList" parameterType="hashmap" resultMap="boardResultSet">
       SELECT * 
@@ -101,22 +122,22 @@
 	<select id="selectComments" parameterType="_int" resultMap="commentResultSet">
 		SELECT *
 		FROM CMT_VIEW
-		WHERE B_NO=#{bNo}
-		AND CMT_STATUS='Y'
+		WHERE B_NO = #{bNo}
+		AND CMT_STATUS = 'Y'
 		ORDER BY CMT_NO DESC
+	</select>
+
+	<select id="selectComment" parameterType="Comment" resultMap="commentResultSet">
+		SELECT *
+		FROM CMT_VIEW
+		WHERE CMT_NO = #{cmtNo}
+		AND CMT_STATUS = 'Y'
 	</select>
 
 	<insert id="insertComment" parameterType="Comment">
 		INSERT INTO TB_BOARD_COMMENT 
 		VALUES (C_SEQ.NEXTVAL, #{mNo}, #{bNo}, #{cmtContent}, SYSDATE, SYSDATE, DEFAULT)
 	</insert>
-
-	<select id="selectComment" parameterType="Comment" resultMap="commentResultSet">
-		SELECT *
-		FROM CMT_VIEW
-		WHERE CMT_NO=#{cmtNo}
-		AND CMT_STATUS='Y'
-	</select>
 
 	<update id="updateComment" parameterType="Comment">
 		UPDATE TB_BOARD_COMMENT 
@@ -130,12 +151,6 @@
 		UPDATE TB_BOARD_COMMENT
 		SET CMT_STATUS = 'N'
 		WHERE CMT_NO = #{cmtNo}
-	</update>
-
-	<update id="deleteBoard" parameterType="_int">
-		UPDATE TB_BOARD 
-		SET B_STATUS = 'N'
-		WHERE B_NO = #{bNo}
 	</update>
 
 </mapper>

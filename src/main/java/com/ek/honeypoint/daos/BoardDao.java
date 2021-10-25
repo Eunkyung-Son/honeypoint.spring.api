@@ -24,6 +24,22 @@ public class BoardDao {
 		return (ArrayList)sqlSession.selectList("boardMapper.selectAllWithType", boardType);
 	}
 
+	public Board selectBoard(int bNo) {
+		return sqlSession.selectOne("boardMapper.selectBoard", bNo);
+	}
+
+  public int insertBoard(Board board) {
+    return sqlSession.insert("boardMapper.insertBoard", board);
+  }
+
+  public int updateBoard(Board board) {
+    return sqlSession.update("boardMapper.updateBoard", board);
+  }
+
+	public int deleteBoard(int boardId) {
+    return sqlSession.delete("boardMapper.deleteBoard", boardId);
+  }
+
   public ArrayList<Board> searchList(HashMap<String, Object> search) {
 		return (ArrayList)sqlSession.selectList("boardMapper.searchList", search);
 	}
@@ -31,6 +47,10 @@ public class BoardDao {
   public ArrayList<Comment> selectComments(int bNo) {
     return (ArrayList)sqlSession.selectList("boardMapper.selectComments", bNo);
   }
+
+	public Comment selectComment(int commentNo) {
+		return sqlSession.selectOne("boardMapper.selectComment", commentNo);
+	}
 
 	public int insertComment(Comment comment) {
 		return sqlSession.insert("boardMapper.insertComment", comment);
@@ -40,20 +60,8 @@ public class BoardDao {
 		return sqlSession.update("boardMapper.updateComment", comment);
 	}
 
-	public Comment selectComment(int commentNo) {
-		return sqlSession.selectOne("boardMapper.selectComment", commentNo);
-	}
-
 	public int deleteComment(int commentId) {
 		return sqlSession.delete("boardMapper.deleteComment", commentId);
-	}
-
-  public int deleteBoard(int boardId) {
-    return sqlSession.delete("boardMapper.deleteBoard", boardId);
-  }
-
-	public Board selectBoard(int bNo) {
-		return sqlSession.selectOne("boardMapper.selectBoard", bNo);
 	}
 
 }

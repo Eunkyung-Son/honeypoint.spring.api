@@ -8,14 +8,16 @@ import com.ek.honeypoint.models.Comment;
 
 public interface BoardService {
   ArrayList<Board> selectList();
-  ArrayList<Board> selectList(Integer boardType);
+  ArrayList<Board> selectList(int boardType);
+  Board selectBoard(int bNo);
+  int insertBoard(Board board);
+  int updateBoard(Board board);
+  int deleteBoard(int boardId);
   ArrayList<Board> searchList(HashMap<String, Object> search);
   ArrayList<Comment> selectComments(int bNo);
+  Comment selectComment(int commentNo);
   int insertComment(Comment comment);
   int updateComment(Comment comment);
-  Comment selectComment(int commentNo);
   int deleteComment(int commentId);
-  int deleteBoard(int boardId);
-  Board selectBoard(int bNo);
 
 }
