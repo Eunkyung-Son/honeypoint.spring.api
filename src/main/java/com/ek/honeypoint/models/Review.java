@@ -1,7 +1,7 @@
 package com.ek.honeypoint.models;
 
-import com.ek.honeypoint.member.model.vo.GnrlMember;
-import com.ek.honeypoint.member.model.vo.Member;
+import com.ek.honeypoint.models.GnrlMember;
+import com.ek.honeypoint.models.Member;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;

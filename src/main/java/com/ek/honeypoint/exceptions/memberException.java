@@ -1,4 +1,4 @@
-package com.ek.honeypoint.member.model.exception;
+package com.ek.honeypoint.exceptions;
 
 public class memberException extends RuntimeException{
 	public memberException(String msg) {

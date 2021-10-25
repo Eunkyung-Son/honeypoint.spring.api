@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import com.ek.honeypoint.models.Board;
 import com.ek.honeypoint.models.Comment;
-import com.ek.honeypoint.models.SearchOption;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;

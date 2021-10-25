@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.ek.honeypoint.member.model.vo.Member;
+import com.ek.honeypoint.models.Member;
 
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 

@@ -73,13 +73,13 @@
 	</select>
 
 	
-	<select id="idCheck" parameterType="string">
+	<select id="idCheck" parameterType="string" resultType="_int">
 		SELECT COUNT(*)
 		FROM MEM_SORT
 		WHERE M_ID = #{id}
 	</select>
 
-	<select id="emailCheck" parameterType="string">
+	<select id="emailCheck" parameterType="string" resultType="_int">
 		SELECT COUNT(*)
 		FROM MEM_SORT
 		WHERE M_EMAIL = #{mEmail}

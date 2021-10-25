@@ -1,9 +1,9 @@
-package com.ek.honeypoint.member.model.dao;
+package com.ek.honeypoint.daos;
 
-import com.ek.honeypoint.member.model.vo.Member;
-import com.ek.honeypoint.member.model.vo.Menu;
-import com.ek.honeypoint.member.model.vo.Photofile;
-import com.ek.honeypoint.member.model.vo.Restaurant;
+import com.ek.honeypoint.models.Member;
+import com.ek.honeypoint.models.Menu;
+import com.ek.honeypoint.models.Photofile;
+import com.ek.honeypoint.models.RestaurantMember;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +31,13 @@ public class memberDao {
 		return sqlSession.insert("memberMapper.insertPwdMember", member);
 	}
 	
-	public int insertBasicRestaurant(Restaurant restaurant) {
+	public int insertBasicRestaurant(RestaurantMember restaurant) {
 		return sqlSession.insert("memberMapper.insertBasicRestaurant", restaurant);
 	}
-	public int insertRestaurantInfo(Restaurant restaurant) {
+	public int insertRestaurantInfo(RestaurantMember restaurant) {
 		return sqlSession.insert("memberMapper.insertRestaurantInfo", restaurant);
 	}
-	public int insertPwdRestaurant(Restaurant restaurant) {
+	public int insertPwdRestaurant(RestaurantMember restaurant) {
 		return sqlSession.insert("memberMapper.insertPwdRestaurant", restaurant);
 	}
 
@@ -64,7 +64,7 @@ public class memberDao {
 
 	public int insertResImg(int rNo, String originFileList, String renameFileList) {
 		Photofile value = new Photofile();
-		value.setrNo(rNo);
+		value.setRNo(rNo);
 		value.setOriginFileName(originFileList);
 		value.setStreFileName(renameFileList);
 		return sqlSession.insert("memberMapper.insertResImg", value);

@@ -1,4 +1,4 @@
-package com.ek.honeypoint.member.model.vo;
+package com.ek.honeypoint.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

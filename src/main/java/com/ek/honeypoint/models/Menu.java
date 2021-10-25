@@ -1,4 +1,4 @@
-package com.ek.honeypoint.member.model.vo;
+package com.ek.honeypoint.models;
 
 public class Menu {
 	private int menuNo;

@@ -18,22 +18,16 @@
 		<typeAlias type="com.ek.honeypoint.models.Settle" alias="Settle"/>
 		
 		<!-- 멤버 -->
-		<typeAlias type="com.ek.honeypoint.member.model.vo.Member" alias="Member"/>
-		<typeAlias type="com.ek.honeypoint.member.model.vo.GnrlMember" alias="GnrlMember"/>
-		<typeAlias type="com.ek.honeypoint.member.model.vo.Restaurant" alias="Restaurant2"/>
-		<typeAlias type="com.ek.honeypoint.member.model.vo.InsertResImg" alias="InsertResImg"/>
-		<typeAlias type="com.ek.honeypoint.member.model.vo.Menu" alias="Menu"/>
-		<typeAlias type="com.ek.honeypoint.member.model.vo.Photofile" alias="Photofile2"/>
+		<typeAlias type="com.ek.honeypoint.models.Member" alias="Member"/>
+		<typeAlias type="com.ek.honeypoint.models.GnrlMember" alias="GnrlMember"/>
+		<typeAlias type="com.ek.honeypoint.models.RestaurantMember" alias="Restaurant2"/>
+		<typeAlias type="com.ek.honeypoint.models.InsertResImg" alias="InsertResImg"/>
+		<typeAlias type="com.ek.honeypoint.models.Menu" alias="Menu"/>
+		<typeAlias type="com.ek.honeypoint.models.Photofile" alias="Photofile2"/>
 		
 		<!-- 찜 정보 -->
 		<typeAlias type="com.ek.honeypoint.models.Favor" alias="Favor"/>
 		
-		<!-- 마이페이지 -->
-		<typeAlias type="com.ek.honeypoint.mypage.member.model.vo.ReservePay" alias="ReservePay"/>
-		<typeAlias type="com.ek.honeypoint.mypage.member.model.vo.Post" alias="Post"/>
-		<typeAlias type="com.ek.honeypoint.mypage.member.model.vo.PaidPoint" alias="PaidPoint"/>
-		<typeAlias type="com.ek.honeypoint.mypage.member.model.vo.UsedPoint" alias="UsedPoint"/>
-
 		<!-- 게시판 -->
 		<typeAlias type="com.ek.honeypoint.models.Board" alias="Board"/>
 		<typeAlias type="com.ek.honeypoint.models.SearchOption" alias="SearchOption"/>
@@ -46,7 +40,6 @@
 		<mapper resource="mappers/review-mapper.xml"/>
 		<mapper resource="mappers/restaurant-mapper.xml"/>
 		<mapper resource="mappers/member-mapper.xml"/>
-		<mapper resource="mappers/membermp-mapper.xml"/>
 		<mapper resource="mappers/board-mapper.xml"/>
 	</mappers>
 </configuration>

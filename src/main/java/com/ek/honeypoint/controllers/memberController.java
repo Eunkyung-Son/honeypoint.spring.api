@@ -1,4 +1,4 @@
-package com.ek.honeypoint.member.controller;
+package com.ek.honeypoint.controllers;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -8,12 +8,12 @@ import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.ek.honeypoint.member.model.exception.memberException;
-import com.ek.honeypoint.member.model.service.memberService;
-import com.ek.honeypoint.member.model.vo.InsertResImg;
-import com.ek.honeypoint.member.model.vo.Member;
-import com.ek.honeypoint.member.model.vo.Menu;
-import com.ek.honeypoint.member.model.vo.Restaurant;
+import com.ek.honeypoint.exceptions.memberException;
+import com.ek.honeypoint.services.memberService;
+import com.ek.honeypoint.models.InsertResImg;
+import com.ek.honeypoint.models.Member;
+import com.ek.honeypoint.models.Menu;
+import com.ek.honeypoint.models.RestaurantMember;
 import com.ek.honeypoint.models.HPResponse;
 import com.ek.honeypoint.models.PasswordRequest;
 
@@ -22,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -52,16 +51,20 @@ public class memberController {
 	 * @param member 로그인 요청 member
 	 * @return
 	 */
-	@RequestMapping(value = "login", method = RequestMethod.POST)
+	@RequestMapping(value = "api/login", method = RequestMethod.POST)
 	@ResponseBody
 	public HPResponse memberLogin(
 		@RequestBody Member member
 	) {
 		HPResponse response = new HPResponse();
-		member = mService.loginMember(member);
-		if (member != null) {
-			member = mService.selectMember(member.getmNo());
-			response.put("member", member);
+		Member loginUser = mService.loginMember(member);
+		if (loginUser != null) {
+			if (loginUser.getmSortNo() == 1) {
+				member = mService.selectMember(loginUser.getmNo());
+				response.put("member", member);
+			} else {
+				response.put("member", loginUser);
+			}
 		} else {
 			response.put("error", true);
 			response.put("msg", "로그인에 실패하였습니다.");			
@@ -75,7 +78,7 @@ public class memberController {
 	 * @return 아이디
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "findId", method = RequestMethod.POST)
+	@RequestMapping(value = "api/findId", method = RequestMethod.POST)
 	@ResponseBody
 	public String findId(
 		@RequestParam("email") String email 
@@ -90,18 +93,18 @@ public class memberController {
 	}
 	
 	// FIXME: 비밀번호 찾기
-	@RequestMapping(value = "findPwd", method = RequestMethod.POST)
+	@RequestMapping(value = "api/findPwd", method = RequestMethod.POST)
 	@ResponseBody
 	public void find_pwd(
 		@RequestParam("id") String id,
 		@RequestParam("email") String email
-	) throws Exception{
+	) throws Exception {
 		mService.findPwd(id, email);
 		// mService.findIdByEmail(email); TODO: 의미가 뭐지?
 	}
 	
 	// 비밀번호 변경
-	@RequestMapping(value = "resetPwd", method = RequestMethod.POST)
+	@RequestMapping(value = "api/resetPwd", method = RequestMethod.POST)
 	@ResponseBody
 	@Transactional("transactionManager")
 	public HPResponse resetPwd (
@@ -195,8 +198,8 @@ public class memberController {
 	@RequestMapping(value = "restaurantInsert", method = RequestMethod.POST)
 	@ResponseBody
 	@Transactional("transactionManager")
-	public Restaurant resInsert(
-		@RequestBody Restaurant restaurant
+	public RestaurantMember resInsert(
+		@RequestBody RestaurantMember restaurant
 	) {
 		int basicResult = mService.insertBasicRestaurant(restaurant);
 		int rstrntResult = mService.insertRestaurantInfo(restaurant);

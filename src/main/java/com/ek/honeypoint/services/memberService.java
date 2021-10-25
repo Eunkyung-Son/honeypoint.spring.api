@@ -1,13 +1,10 @@
-package com.ek.honeypoint.member.model.service;
+package com.ek.honeypoint.services;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletResponse;
 
-import com.ek.honeypoint.member.model.vo.InsertResImg;
-import com.ek.honeypoint.member.model.vo.Member;
-import com.ek.honeypoint.member.model.vo.Menu;
-import com.ek.honeypoint.member.model.vo.Restaurant;
+import com.ek.honeypoint.models.Member;
+import com.ek.honeypoint.models.RestaurantMember;
 
 public interface memberService {
 
@@ -20,9 +17,9 @@ public interface memberService {
 	public int insertPwdMember(Member member);
 	
 	// 3. 맛집 회원 가입 서비스를 위한 메소드
-	public int insertBasicRestaurant(Restaurant r1);
-	public int insertRestaurantInfo(Restaurant r2);
-	public int insertPwdRestaurant(Restaurant r3);
+	public int insertBasicRestaurant(RestaurantMember r1);
+	public int insertRestaurantInfo(RestaurantMember r2);
+	public int insertPwdRestaurant(RestaurantMember r3);
 	
 	// 4. 아이디 중복 검사를 위한 메소드
 	public int checkIdDup(String id);

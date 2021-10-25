@@ -1,10 +1,10 @@
-package com.ek.honeypoint.member.model.service;
+package com.ek.honeypoint.services;
 
 import java.io.IOException;
 
-import com.ek.honeypoint.member.model.dao.memberDao;
-import com.ek.honeypoint.member.model.vo.Member;
-import com.ek.honeypoint.member.model.vo.Restaurant;
+import com.ek.honeypoint.daos.memberDao;
+import com.ek.honeypoint.models.Member;
+import com.ek.honeypoint.models.RestaurantMember;
 
 import org.apache.commons.mail.HtmlEmail;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,19 +69,19 @@ public class memberServiceImpl implements memberService {
 	}
 
 	@Override
-	public int insertBasicRestaurant(Restaurant restaurant) {
+	public int insertBasicRestaurant(RestaurantMember restaurant) {
 		return mDao.insertBasicRestaurant(restaurant);
 	}
 
 	@Override
-	public int insertRestaurantInfo(Restaurant restaurant) {
+	public int insertRestaurantInfo(RestaurantMember restaurant) {
 		return mDao.insertRestaurantInfo(restaurant);
 	}
 
 	@Override
-	public int insertPwdRestaurant(Restaurant restaurant) {
-		String encPwd = bcryptPasswordEncoder.encode(restaurant.getmPwd());
-		restaurant.setmPwd(encPwd);
+	public int insertPwdRestaurant(RestaurantMember restaurant) {
+		String encPwd = bcryptPasswordEncoder.encode(restaurant.getMPwd());
+		restaurant.setMPwd(encPwd);
 		return mDao.insertPwdRestaurant(restaurant);
 	}
 
