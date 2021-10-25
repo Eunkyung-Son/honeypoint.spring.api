@@ -20,7 +20,7 @@
 		<!-- 멤버 -->
 		<typeAlias type="com.ek.honeypoint.models.Member" alias="Member"/>
 		<typeAlias type="com.ek.honeypoint.models.GnrlMember" alias="GnrlMember"/>
-		<typeAlias type="com.ek.honeypoint.models.RestaurantMember" alias="Restaurant2"/>
+		<typeAlias type="com.ek.honeypoint.models.RestaurantMember" alias="RestaurantMember"/>
 		<typeAlias type="com.ek.honeypoint.models.InsertResImg" alias="InsertResImg"/>
 		<typeAlias type="com.ek.honeypoint.models.Menu" alias="Menu"/>
 		<typeAlias type="com.ek.honeypoint.models.Photofile" alias="Photofile2"/>

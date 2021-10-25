@@ -147,12 +147,12 @@ public class memberServiceImpl implements memberService {
 	public void sendEmail(Member member, String div){
 		// Mail Server 설정
 		String charSet = "utf-8";
-		String hostSMTP = "smtp.naver.com";
-		String hostSMTPid = "strange177a";
-		String hostSMTPpwd = "honeypoint123";
+		String hostSMTP = "smtp.gmail.com";
+		String hostSMTPid = "sek9510@gmail.com";
+		String hostSMTPpwd = "vopsfplalkmlidhw";
 
 		// 보내는 사람 EMail, 제목, 내용
-		String fromEmail = "strange177a@naver.com";
+		String fromEmail = "sek9510@gmail.com";
 		String fromName = "허니포인트";
 		String subject = "";
 		String msg = "";
@@ -217,11 +217,13 @@ public class memberServiceImpl implements memberService {
 			for (int i = 0; i < 12; i++) {
 				pw += (char) ((Math.random() * 26) + 97);
 			}
+			//인코딩 되기 전 비밀번호로 이메일 전송
 			mem.setmPwd(pw);
-			// 비밀번호 변경
-			mDao.updatePwd(mem);
-			// 비밀번호 변경 메일 발송
 			sendEmail(mem,"find_pw");
+			// 이메일 전송 후 비밀번호 인코딩 해서 디비에 저장
+			String encodedPwd = bcryptPasswordEncoder.encode(pw);
+			mem.setmPwd(encodedPwd);
+			mDao.updatePwd(mem);
 			
 			// out.println("<script>");
 			// out.println("alert('임시 비밀번호를 이메일로 발송했습니다.');");

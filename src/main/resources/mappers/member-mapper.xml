@@ -21,7 +21,7 @@
 		<result property="mPoint" column="M_POINT" />
 		<result property="mSortNo" column="M_SORT_NO" />
 	</resultMap>
-	<resultMap type="Restaurant2" id="restaurantResultSet">
+	<resultMap type="RestaurantMember" id="restaurantResultSet">
 		<id property="rNo" column="R_NO"/>
 		<result property="mNo" column="M_NO"/>
 		<result property="mId" column="M_ID" />
