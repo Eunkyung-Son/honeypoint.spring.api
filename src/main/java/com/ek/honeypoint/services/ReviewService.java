@@ -10,7 +10,7 @@ public interface ReviewService {
   int updateReview(Review review);
   int deleteReview(int revNo);
   ArrayList<Review> getReviewsByRestaurant(int restaurantId);
-  ArrayList<Review> getReviewsByMember(int memberId);
+  ArrayList<Review> getReviewsByMember(int mNo);
   int selectReviewCount(int restaurantId);
   ArrayList<Review> selectReviewFilter(int restaurantId, int filterType);
 }

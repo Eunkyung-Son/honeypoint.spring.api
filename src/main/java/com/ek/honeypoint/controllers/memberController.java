@@ -9,18 +9,26 @@ import java.util.Iterator;
 import javax.servlet.http.HttpServletRequest;
 
 import com.ek.honeypoint.exceptions.memberException;
+import com.ek.honeypoint.services.BoardService;
+import com.ek.honeypoint.services.FavorService;
+import com.ek.honeypoint.services.ReviewService;
 import com.ek.honeypoint.services.memberService;
 import com.ek.honeypoint.models.InsertResImg;
 import com.ek.honeypoint.models.Member;
 import com.ek.honeypoint.models.Menu;
 import com.ek.honeypoint.models.RestaurantMember;
+import com.ek.honeypoint.models.Review;
+import com.ek.honeypoint.models.Board;
+import com.ek.honeypoint.models.Comment;
 import com.ek.honeypoint.models.HPResponse;
 import com.ek.honeypoint.models.PasswordRequest;
+import com.ek.honeypoint.models.Restaurant;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +48,15 @@ public class memberController {
 
 	@Autowired
 	private memberService mService;
+
+	@Autowired
+	private BoardService boardService;
+
+	@Autowired
+	private FavorService favorService;
+
+	@Autowired
+	private ReviewService reviewService;
 
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -238,6 +255,47 @@ public class memberController {
 	) {
 		boolean isUsable = mService.checkEmailDup(email) == 0 ? true : false;
 		return isUsable;
+	}
+
+	// 일반회원 마이페이지 활동 내역
+	@GetMapping(value = "api/member/activities/{mNo}")
+	@ResponseBody
+	public HPResponse selectGeneralMemberActivities (
+		@PathVariable(value = "mNo") int mNo,
+		@RequestParam(value = "fetchMyComment", defaultValue = "false") Boolean fetchMyComment,
+		@RequestParam(value = "fetchMyReview", defaultValue = "false") Boolean fetchMyReview,
+		@RequestParam(value = "fetchMyBoard", defaultValue = "false") Boolean fetchMyBoard
+	) {
+		ArrayList<Review> reviewList = null;
+		ArrayList<Board> boardList = null;
+		ArrayList<Comment> commentList = null;
+
+		int reviewCount = 0;
+		int boardCount = 0;
+		int commentCount = 0;
+		HPResponse response = new HPResponse();
+
+		if (fetchMyBoard == true) {
+			boardList = boardService.selectMyBoard(mNo);
+			response.put("boardList", boardList);
+			boardCount = boardList.size();
+			response.put("boardCount", boardCount);
+		}
+
+		if (fetchMyComment == true) {
+			commentList = boardService.selectMyComment(mNo);
+			response.put("commentList", commentList);
+			commentCount = commentList.size();
+			response.put("commentCount", commentCount);
+		}
+
+		if (fetchMyReview == true) {
+			reviewList = reviewService.getReviewsByMember(mNo);
+			response.put("reviewList", reviewList);
+			reviewCount = reviewList.size();
+			response.put("reviewCount", reviewCount);
+		}
+		return response;
 	}
 
 

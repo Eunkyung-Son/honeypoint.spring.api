@@ -40,8 +40,8 @@ public class ReviewServiceImpl implements ReviewService {
   }
 
   @Override
-  public ArrayList<Review> getReviewsByMember(int memberId) {
-    return reviewDao.getReviewsByMember(memberId);
+  public ArrayList<Review> getReviewsByMember(int mNo) {
+    return reviewDao.getReviewsByMember(mNo);
   }
 
   @Override

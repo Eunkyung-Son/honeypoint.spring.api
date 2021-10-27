@@ -23,6 +23,10 @@ public class BoardDao {
 		return (ArrayList)sqlSession.selectList("boardMapper.selectAllWithType", boardType);
 	}
 
+  public ArrayList<Board> selectMyBoard(int mNo) {
+    return (ArrayList)sqlSession.selectList("boardMapper.selectMyBoard", mNo);
+  }
+
 	public Board selectBoard(int bNo) {
 		return sqlSession.selectOne("boardMapper.selectBoard", bNo);
 	}
@@ -45,6 +49,10 @@ public class BoardDao {
 
   public ArrayList<Comment> selectComments(int bNo) {
     return (ArrayList)sqlSession.selectList("boardMapper.selectComments", bNo);
+  }
+
+	public ArrayList<Comment> selectMyComment(int mNo) {
+    return (ArrayList)sqlSession.selectList("boardMapper.selectMyComment", mNo);
   }
 
 	public Comment selectComment(int commentNo) {

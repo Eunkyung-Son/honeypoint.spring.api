@@ -56,14 +56,15 @@ public class FileController {
     @PathVariable(value = "restaurantId") String restaurantId,
     @PathVariable(value = "fileId") String fileId
   ) {
-    String path = filePath + "/" + fileId;
+    String path = filePath + "/restaurants/" + restaurantId + "/" + fileId;
     return this.makeFileResponse(path);    
   }
 
   private ResponseEntity<Resource> makeFileResponse(String filePath) {
     HttpHeaders headers = new HttpHeaders();
     try {
-      final UrlResource fileResource = new UrlResource(String.format("filex:%s", filePath));
+      System.out.println(filePath);
+      final UrlResource fileResource = new UrlResource(String.format("file:%s", filePath));
       headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + URLEncoder.encode(fileResource.getFilename(), "UTF-8"));
       return ResponseEntity.ok()
             .headers(headers)

@@ -53,7 +53,7 @@
 	<select id="getReviewsByMember" parameterType="_int" resultMap="reviewResultSet">
 		SELECT *
 		FROM TB_REVIEW
-		WHERE M_NO = ${memberId}
+		WHERE M_NO = #{mNo}
 		AND REV_STATUS = 'Y'
 		ORDER BY REV_NO DESC
 	</select>

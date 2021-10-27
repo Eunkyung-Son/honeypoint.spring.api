@@ -6,7 +6,6 @@ import java.util.HashMap;
 import com.ek.honeypoint.daos.BoardDao;
 import com.ek.honeypoint.models.Board;
 import com.ek.honeypoint.models.Comment;
-import com.ek.honeypoint.models.SearchOption;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +26,11 @@ public class BoardServiceImpl implements BoardService{
   }
 
   @Override
+  public ArrayList<Board> selectMyBoard(int mNo) {
+    return boardDao.selectMyBoard(mNo);
+  }
+
+  @Override
   public Board selectBoard(int bNo) {
     return boardDao.selectBoard(bNo);
   }
@@ -37,15 +41,10 @@ public class BoardServiceImpl implements BoardService{
   }
 
   @Override
-  public ArrayList<Comment> selectComments(int bNo) {
-    return boardDao.selectComments(bNo);
-  }
-  
-  @Override
   public int insertBoard(Board board) {
     return boardDao.insertBoard(board);
   }
-
+  
   @Override
   public int updateBoard(Board board) {
     return boardDao.updateBoard(board);
@@ -54,6 +53,16 @@ public class BoardServiceImpl implements BoardService{
   @Override
   public int deleteBoard(int boardId) {
     return boardDao.deleteBoard(boardId);
+  }
+  
+  @Override
+  public ArrayList<Comment> selectComments(int bNo) {
+    return boardDao.selectComments(bNo);
+  }
+
+  @Override
+  public ArrayList<Comment> selectMyComment(int mNo) {
+    return boardDao.selectMyComment(mNo);
   }
 
   @Override
