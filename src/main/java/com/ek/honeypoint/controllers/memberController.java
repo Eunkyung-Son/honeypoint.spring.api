@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.ek.honeypoint.exceptions.memberException;
 import com.ek.honeypoint.services.BoardService;
 import com.ek.honeypoint.services.FavorService;
+import com.ek.honeypoint.services.RestaurantService;
 import com.ek.honeypoint.services.ReviewService;
 import com.ek.honeypoint.services.memberService;
 import com.ek.honeypoint.models.InsertResImg;
@@ -28,8 +29,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -53,7 +56,7 @@ public class memberController {
 	private BoardService boardService;
 
 	@Autowired
-	private FavorService favorService;
+	private RestaurantService restaurantService;
 
 	@Autowired
 	private ReviewService reviewService;
@@ -298,6 +301,57 @@ public class memberController {
 		return response;
 	}
 
+	// 레스토랑 회원 메뉴 추가
+	@PostMapping(value = "api/menu/insertMenu")
+	@Transactional("transactionManager")
+	@ResponseBody
+	public HPResponse insertMenu (
+		@RequestParam ArrayList<Menu> menu
+	) {
+		HPResponse response = new HPResponse();
+		int insertResult = mService.insertMenu(menu);
+		if (insertResult > 0) {
+			response.put("menu", menu);
+			response.put("msg", "메뉴 등록에 성공하였습니다.");
+		} else {
+			response.put("error", true);
+			response.put("msg", "메뉴 등록에 실패하였습니다.");
+		}
+		return response;
+	}
+
+	// 레스토랑 회원 메뉴 수정
+	@PostMapping(value = "api/menu/updateMenu")
+	@ResponseBody
+	public HPResponse updateMenu (
+		@RequestParam Menu menu
+	) {
+		HPResponse response = new HPResponse();
+		// int updateResult = mService.updateMenu(menu);
+		// if (updateResult > 0) {
+			// menu = restaurantService.selectMenuList(menu.getrNo());
+			// response.put()
+		// }
+		return response;
+	}
+
+	// 레스토랑 회원 메뉴 삭제
+	@DeleteMapping(value = "api/menu/{menuNo}")
+	@ResponseBody
+	public HPResponse deleteMenu(
+		@PathVariable(value = "menuNo") int menuNo
+	) {
+		HPResponse response = new HPResponse();
+		int deleteResult = mService.deleteMenu(menuNo);
+		if (deleteResult > 0) {
+			response.put("error", false);
+			response.put("msg", "정상적으로 삭제되었습니다.");
+		} else {
+			response.put("error", true);
+			response.put("msg", "메뉴 삭제에 실패하였습니다");
+		}
+		return response;
+	}
 
 	// TODO: 파일 저장 때문에 보류
 	@RequestMapping(value = "insertMenu.do", method = RequestMethod.POST)

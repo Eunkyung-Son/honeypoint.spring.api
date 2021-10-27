@@ -160,6 +160,11 @@
 		INSERT INTO TB_RSTRNT_MENU
 		VALUES (R_MENU_SEQ.NEXTVAL, #{rNo}, #{menuName}, #{menuPrice})
 	</insert>
+
+	<delete id="deleteMenu" parameterType="_int">
+		DELETE FROM TB_RSTRNT_MENU
+		WHERE MENU_NO = #{menuNo}
+	</delete>
 	
 	<insert id="insertResImg" parameterType="Photofile2">
 		INSERT INTO TB_PHOTOFILES
@@ -210,4 +215,5 @@
 		ON A.M_NO = B.M_NO
 		WHERE A.M_NO = #{mNo}
 	</select>
+
 </mapper>

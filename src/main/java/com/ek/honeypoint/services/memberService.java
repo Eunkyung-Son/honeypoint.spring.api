@@ -1,9 +1,10 @@
 package com.ek.honeypoint.services;
 
 import java.io.IOException;
-
+import java.util.ArrayList;
 
 import com.ek.honeypoint.models.Member;
+import com.ek.honeypoint.models.Menu;
 import com.ek.honeypoint.models.RestaurantMember;
 
 public interface memberService {
@@ -55,5 +56,9 @@ public interface memberService {
   public int updateMember(Member member);
 
   public int updateGeneralMember(Member member);
+
+  public int insertMenu(ArrayList<Menu> menu);
+
+  public int deleteMenu(int menuNo);
 
 }

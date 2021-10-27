@@ -1,5 +1,7 @@
 package com.ek.honeypoint.daos;
 
+import java.util.ArrayList;
+
 import com.ek.honeypoint.models.Member;
 import com.ek.honeypoint.models.Menu;
 import com.ek.honeypoint.models.Photofile;
@@ -112,5 +114,13 @@ public class memberDao {
 	public int updateGeneralMember(Member member) {
 		return sqlSession.update("memberMapper.updateGeneralMember", member);
 	}
+
+  public int insertMenu(ArrayList<Menu> menu) {
+    return sqlSession.insert("memberMapper.insertMenu", menu);
+  }
+
+  public int deleteMenu(int menuNo) {
+    return sqlSession.delete("memberMapper.deleteMenu", menuNo);
+  }
 
 }

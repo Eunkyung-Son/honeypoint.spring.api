@@ -80,10 +80,8 @@ public class BoardController {
   public Board insertBoard(
     @RequestBody Board board
   ) {
-    System.out.println("^^Board^^" + board);
     HPResponse response = new HPResponse();
     int insertResult = boardService.insertBoard(board);
-    System.out.println("####insertResult###" + insertResult);
     if (insertResult > 0) {
       return board;
     } else {

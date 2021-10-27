@@ -1,9 +1,11 @@
 package com.ek.honeypoint.services;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import com.ek.honeypoint.daos.memberDao;
 import com.ek.honeypoint.models.Member;
+import com.ek.honeypoint.models.Menu;
 import com.ek.honeypoint.models.RestaurantMember;
 
 import org.apache.commons.mail.HtmlEmail;
@@ -140,6 +142,16 @@ public class memberServiceImpl implements memberService {
 	@Override
 	public Member getMemberByEmail(String email) {
 		return mDao.getMemberByEmail(email);
+	}
+
+	@Override
+	public int insertMenu(ArrayList<Menu> menu) {
+		return mDao.insertMenu(menu);
+	}
+
+	@Override
+	public int deleteMenu(int menuNo) {
+		return mDao.deleteMenu(menuNo);
 	}
 	
 	// TODO: 이메일 설정하기
