@@ -156,9 +156,15 @@
 	
 	<!-- 맛집 이미지, 메뉴 추가 -->
 	
-	<insert id="insertMenu" parameterType="Menu">
-		INSERT INTO TB_RSTRNT_MENU
-		VALUES (R_MENU_SEQ.NEXTVAL, #{rNo}, #{menuName}, #{menuPrice})
+	<insert id="insertMenu" parameterType="java.util.List">
+		<foreach collection="list" item="menu" index="index" separator=" " open="INSERT ALL" close="SELECT * FROM DUAL">
+			INTO TB_RSTRNT_MENU ( MENU_NO, R_NO, MENU_NAME, MENU_PRICE ) 
+			VALUES( R_MENU_SEQ.NEXTVAL, 
+			#{menu.rNo}, 
+			#{menu.menuName}, 
+			#{menu.menuPrice}
+			)
+		</foreach>
 	</insert>
 
 	<delete id="deleteMenu" parameterType="_int">

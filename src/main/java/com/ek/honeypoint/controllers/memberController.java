@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -306,8 +307,9 @@ public class memberController {
 	@Transactional("transactionManager")
 	@ResponseBody
 	public HPResponse insertMenu (
-		@RequestParam ArrayList<Menu> menu
+    @RequestBody ArrayList<Menu> menu
 	) {
+		System.out.println("#####menu####" + menu);
 		HPResponse response = new HPResponse();
 		int insertResult = mService.insertMenu(menu);
 		if (insertResult > 0) {
