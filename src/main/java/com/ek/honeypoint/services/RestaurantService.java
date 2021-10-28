@@ -21,6 +21,8 @@ public interface RestaurantService {
 	ArrayList<Restaurant> selectRestaurants(String restaurantType);
 	ArrayList<Restaurant> selectRestaurants(ArrayList<Integer> restaurantIds);
 
+	int insertRestaurantImg(ArrayList<Photofile> photofiles);
+
 	int selectImgListCount(int rNo);
 
 	ArrayList<Photofile> selectImgList(int rNo);

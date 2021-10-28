@@ -43,6 +43,11 @@ public class RestaurantServiceImpl implements RestaurantService {
 	}
 
 	@Override
+	public int insertRestaurantImg(ArrayList<Photofile> photofiles) {
+		return rDao.insertRestaurantImg(photofiles);
+	}
+
+	@Override
 	public int selectImgListCount(int rNo) {
 		
 		return rDao.selectImgListCount(rNo);

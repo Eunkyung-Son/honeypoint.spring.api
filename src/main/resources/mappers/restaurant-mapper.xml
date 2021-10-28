@@ -142,6 +142,16 @@
 		AND R_STATUS=1
 	</select>
 
+	<insert id="insertRestaurantImg" parameterType="java.util.List">
+		INSERT INTO TB_PHOTOFILES VALUES 
+		<foreach collection="list" item="photofile" index="index" open="(" separator="),(" close=")">
+			R_IMG_SEQ.NEXTVAL,
+			#{ photofile.rNo },
+			#{ photofile.originFileName },
+			#{ photofile.streFileName },
+			#{ photofile.imgType }
+		</foreach>
+	</insert>
 
 	<select id="selectImgListCount" parameterType="_int" resultType="_int">
 		SELECT COUNT(*)
@@ -309,4 +319,3 @@
 	</select>
 	
 </mapper>
-

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,18 +25,22 @@ import com.ek.honeypoint.models.ReviewImg;
 import com.ek.honeypoint.models.RstrntMenu;
 import com.ek.honeypoint.models.UpdateReviewImg;
 import com.ek.honeypoint.services.FavorService;
+import com.ek.honeypoint.services.FileService;
 import com.ek.honeypoint.services.RestaurantService;
 import com.ek.honeypoint.services.ReviewService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -49,6 +54,10 @@ public class RestaurantController {
 	private ReviewService reviewService;
 	@Autowired
 	private FavorService favorService;
+	@Autowired
+	private FileService fileService;
+	@Value("${file.path}")
+	private String filePath;
 	
 	private Logger logger = LoggerFactory.getLogger(RestaurantController.class);
 	
@@ -175,7 +184,22 @@ public class RestaurantController {
 		return response;
 	}
 
-	// TODO: 아래는 reviewController 등 다른 컨트롤러로 관리해야함. 코드 이관 전 상태
+	// 레스토랑 이미지 수정 레스토랑은 항상 회원가입 후에 이미지를 올릴 수 있으므로 다른 정보랑 api를 다르게
+	@PostMapping(value="/api/file/restaurant/{restaurantId}")
+	@ResponseBody
+	public HPResponse addFileOnRestaurant(
+		@PathVariable(value = "restaurantId") int restaurantId,
+		@RequestPart("files") List<MultipartFile> filePart
+	) {
+		System.out.println(filePart + "ddd@");
+		HPResponse response = new HPResponse();
+		String path = filePath + "/restaurants" + "/" + restaurantId;
+		System.out.println(path);
+    ArrayList<Photofile> photofiles = fileService.saveFileOnRestaurant(filePart, path, restaurantId);
+		int result = rService.insertRestaurantImg(photofiles);
+		System.out.println(result);
+		return response;
+	}
 
 
 	//FIXME: 리턴타입, url주소 & 이미지랑 함께 리턴하는 방법 생각해보기 ?
@@ -239,7 +263,6 @@ public class RestaurantController {
 		return mv;
 		
 	}
-	
 
 	// // FIXME: 리턴타입, url주소
 	// @RequestMapping(value="insertReview.do", method = RequestMethod.POST)

@@ -48,6 +48,10 @@ public class RestaurantDao {
 		return (ArrayList)sqlSession.selectList("restaurantMapper.selectAllByIds", map);
 	}
 
+	public int insertRestaurantImg(ArrayList<Photofile> photofiles) {
+		return sqlSession.insert("restaurantMapper.insertRestaurantImg", photofiles);
+	}
+
 	public int selectImgListCount(int rNo) {
 		return sqlSession.selectOne("restaurantMapper.selectImgListCount", rNo);
 	}

@@ -8,7 +8,9 @@ import java.util.List;
 
 import javax.print.attribute.standard.Media;
 
+import com.ek.honeypoint.models.Photofile;
 import com.ek.honeypoint.services.FileService;
+import com.ek.honeypoint.services.RestaurantService;
 
 import org.apache.catalina.webresources.FileResource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,17 +40,21 @@ public class FileController {
   @Autowired
   private FileService fileService;
 
+  @Autowired
+  private RestaurantService restaurantService;
+
   @Value("${file.path}")
   private String filePath;
   
-  @PostMapping(value="/api/file/restaurant/{restaurantId}")
-  public void addFileOnRestaurant(
-    @PathVariable(value = "restaurantId") String restaurantId,
-    @RequestPart("files") List<MultipartFile> filePart
-  ) {
-    String path = filePath + "/restaurants" + "/" + restaurantId;
-    ArrayList<File> returnFile = fileService.saveFile(filePart, path);
-  }
+  // @PostMapping(value="/api/file/restaurant/{restaurantId}")
+  // public void addFileOnRestaurant(
+  //   @PathVariable(value = "restaurantId") int restaurantId,
+  //   @RequestPart("files") List<MultipartFile> filePart
+  // ) {
+  //   String path = filePath + "/restaurants" + "/" + restaurantId;
+  //   ArrayList<Photofile> returnFile = fileService.saveFileOnRestaurant(filePart, path, restaurantId);
+    
+  // }
 
   @GetMapping(value="/api/file/restaurant/{restaurantId}/{fileId}")
   @ResponseBody
@@ -73,10 +79,9 @@ public class FileController {
             .body(fileResource);
     } catch (Exception e) {
       e.printStackTrace();
-      // 파일 못읽었을 때 return 값에 대한 음 ...
+      // 파일 못읽었을 때 return 값에 대한 음 …
       return null;
     }
   }
   
 }
-
