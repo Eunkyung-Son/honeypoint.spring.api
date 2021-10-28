@@ -157,14 +157,14 @@
 	<!-- 맛집 이미지, 메뉴 추가 -->
 	
 	<insert id="insertMenu" parameterType="java.util.List">
-		<foreach collection="list" item="menu" index="index" separator=" " open="INSERT ALL" close="SELECT * FROM DUAL">
-			INTO TB_RSTRNT_MENU ( MENU_NO, R_NO, MENU_NAME, MENU_PRICE ) 
-			VALUES( R_MENU_SEQ.NEXTVAL, 
-			#{menu.rNo}, 
-			#{menu.menuName}, 
-			#{menu.menuPrice}
-			)
-		</foreach>
+			INSERT INTO TB_RSTRNT_MENU(MENU_NO,R_NO,MENU_NAME,MENU_PRICE)
+			SELECT R_MENU_SEQ.NEXTVAL, A.* FROM(
+		<foreach collection="list" item="menu" separator="UNION ALL ">
+			SELECT #{menu.rNo} AS R_NO, 
+				#{menu.menuName} AS MENU_NAME, 
+				#{menu.menuPrice} AS MENU_PRICE
+			FROM DUAL
+		</foreach>) A
 	</insert>
 
 	<delete id="deleteMenu" parameterType="_int">

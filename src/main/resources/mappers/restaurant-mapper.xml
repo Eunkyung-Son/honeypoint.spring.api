@@ -143,14 +143,15 @@
 	</select>
 
 	<insert id="insertRestaurantImg" parameterType="java.util.List">
-		INSERT INTO TB_PHOTOFILES VALUES 
-		<foreach collection="list" item="photofile" index="index" open="(" separator="),(" close=")">
-			R_IMG_SEQ.NEXTVAL,
-			#{ photofile.rNo },
-			#{ photofile.originFileName },
-			#{ photofile.streFileName },
-			#{ photofile.imgType }
-		</foreach>
+		INSERT INTO TB_PHOTOFILES(R_PHOTO_FILE_ID, R_NO, ORIGIN_FILE_NM, STRE_FILE_NM, IMG_TYPE)
+		SELECT R_IMG_SEQ.NEXTVAL, A.* FROM(
+		<foreach collection="list" item="photofile" separator="UNION ALL ">
+			SELECT #{photofile.rNo} AS R_NO,
+				#{photofile.originFileName} AS ORIGIN_FILE_NM,
+				#{photofile.streFileName} AS STRE_FILE_NM,
+				#{photofile.imgType} AS IMG_TYPE
+			FROM DUAL
+		</foreach>) A
 	</insert>
 
 	<select id="selectImgListCount" parameterType="_int" resultType="_int">
