@@ -21,7 +21,7 @@
 
   <insert id="insertReview" parameterType="Review">
 		INSERT INTO TB_REVIEW
-            VALUES(RSTRNT_REV_SEQ.NEXTVAL, #{ rNo }, #{ revCn }, SYSDATE, #{ score }, DEFAULT, #{ mNo })
+    VALUES(RSTRNT_REV_SEQ.NEXTVAL, #{ rNo }, #{ revCn }, SYSDATE, #{ score }, DEFAULT, #{ mNo })
 	</insert>
 
 	<update id="updateReview" parameterType="Review">
@@ -53,6 +53,8 @@
 	<select id="getReviewsByMember" parameterType="_int" resultMap="reviewResultSet">
 		SELECT *
 		FROM TB_REVIEW
+		JOIN TB_MEMBER USING(M_NO)
+		JOIN TB_GNRL_MEMBER USING(M_NO)
 		WHERE M_NO = #{mNo}
 		AND REV_STATUS = 'Y'
 		ORDER BY REV_NO DESC
