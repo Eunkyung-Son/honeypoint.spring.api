@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.ek.honeypoint.models.Favor;
 import com.ek.honeypoint.models.InsertReviewImg;
+import com.ek.honeypoint.models.Menu;
 import com.ek.honeypoint.models.Photofile;
 import com.ek.honeypoint.models.Reservation;
 import com.ek.honeypoint.models.Restaurant;
@@ -52,6 +53,10 @@ public class RestaurantDao {
 		return sqlSession.insert("restaurantMapper.insertRestaurantImg", photofiles);
 	}
 
+	public int deleteRestaurantImg(ArrayList<Photofile> photofiles) {
+		return sqlSession.delete("restaurantMapper.deleteRestaurantImg", photofiles);
+	}
+
 	public int selectImgListCount(int rNo) {
 		return sqlSession.selectOne("restaurantMapper.selectImgListCount", rNo);
 	}
@@ -60,7 +65,7 @@ public class RestaurantDao {
 		return (ArrayList)sqlSession.selectList("restaurantMapper.selectImgList", rNo);
 	}
 
-	public ArrayList<RstrntMenu> selectMenuList(int rNo) {
+	public ArrayList<Menu> selectMenuList(int rNo) {
 		return (ArrayList)sqlSession.selectList("restaurantMapper.selectMenuList", rNo);
 	}
 
@@ -160,6 +165,10 @@ public class RestaurantDao {
 
   public ArrayList<Restaurant> searchRestaurants(String keyword) {
     return (ArrayList)sqlSession.selectList("restaurantMapper.searchRestaurants", keyword);
+  }
+
+  public int updateRestaurant(Restaurant restaurant) {
+    return sqlSession.update("restaurantMapper.updateRestaurant", restaurant);
   }
 
 }

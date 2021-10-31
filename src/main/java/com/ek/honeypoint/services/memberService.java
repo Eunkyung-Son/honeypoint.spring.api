@@ -62,4 +62,6 @@ public interface memberService {
 
   public int deleteMenu(int menuNo);
 
+  public int updateMenu(ArrayList<Menu> menu);
+
 }

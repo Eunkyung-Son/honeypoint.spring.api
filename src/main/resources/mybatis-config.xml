@@ -8,7 +8,7 @@
 	<typeAliases>		
 		<typeAlias type="com.ek.honeypoint.models.Restaurant" alias="Restaurant"/>
 		<typeAlias type="com.ek.honeypoint.models.Photofile" alias="Photofile"/>
-		<typeAlias type="com.ek.honeypoint.models.RstrntMenu" alias="RstrntMenu"/>
+		<!-- <typeAlias type="com.ek.honeypoint.models.Menu" alias="Menu"/> -->
 		<typeAlias type="com.ek.honeypoint.models.Review" alias="Review"/>
 		<typeAlias type="com.ek.honeypoint.models.ReviewCount" alias="ReviewCount"/>
 		<typeAlias type="com.ek.honeypoint.models.ReviewImg" alias="ReviewImg"/>

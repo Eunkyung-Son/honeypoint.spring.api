@@ -1,5 +1,7 @@
 package com.ek.honeypoint.models;
 
+import java.util.ArrayList;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -49,5 +51,6 @@ public class Restaurant {
 	private char rStatus; // 1.미승인 2.승인 3.탈퇴
 	@JsonProperty("rCount")
 	private int rCount; // 조회수
-
+	@JsonProperty("fileIds")
+	private ArrayList<String> fileIds;
 }

@@ -72,7 +72,7 @@
 		<result property="imgType" column="IMG_TYPE"/>
 	</resultMap>
 	
-	<resultMap type="RstrntMenu" id="rstrntMenuResultSet">
+	<resultMap type="Menu" id="rstrntMenuResultSet">
 		<id property="menuNo" column="MENU_NO"/>
 		<result property="rNo" column="R_NO"/>
 		<result property="menuName" column="MENU_NAME"/>
@@ -153,6 +153,14 @@
 			FROM DUAL
 		</foreach>) A
 	</insert>
+	
+	<delete id="deleteRestaurantImg" parameterType="java.util.List">
+		DELETE FROM TB_PHOTOFILES
+			WHERE 
+			<foreach collection="list" item="photofile" separator="OR">
+				(R_PHOTO_FILE_ID = #{photofile.photofileId})
+			</foreach>
+	</delete>
 
 	<select id="selectImgListCount" parameterType="_int" resultType="_int">
 		SELECT COUNT(*)
@@ -167,7 +175,7 @@
 	</select>
 	
 	<select id="selectMenuList" parameterType="_int" resultMap="rstrntMenuResultSet">
-		SELECT MENU_NAME, TO_CHAR(MENU_PRICE, '999,999,999,999,999') AS MENU_PRICE
+		SELECT MENU_NAME, MENU_PRICE, MENU_NO, R_NO
 		FROM TB_RSTRNT_MENU
 		WHERE R_NO=#{rNo}
 	</select>
@@ -318,5 +326,24 @@
 		OR R_TAG LIKE #{keyword}
 		OR R_NAME LIKE #{keyword})	
 	</select>
+
+	<update id="updateRestaurant">
+		UPDATE TB_RSTRNT_INFO
+		SET
+		R_TEL = #{rTel},
+		R_TYPE = #{rType},
+		R_NAME = #{rName},
+		R_ADDRESS = #{rAddress},
+		R_O_ADDRESS = #{rOAddress},
+		R_TAG = #{rTag},
+		R_PRICE = #{rPrice},
+		R_PARKING = #{rParking},
+		R_START_TIME = #{rStartTime},
+		R_END_TIME = #{rEndTime},
+		R_INTRO = #{rIntro},
+		RESVE_YN = #{resveYn},
+		R_REST_DAY = #{rRestDay}
+		WHERE M_NO = #{mNo}
+	</update>
 	
 </mapper>

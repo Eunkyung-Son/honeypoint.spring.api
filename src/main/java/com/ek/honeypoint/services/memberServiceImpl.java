@@ -151,6 +151,11 @@ public class memberServiceImpl implements memberService {
 	}
 
 	@Override
+	public int updateMenu(ArrayList<Menu> menu) {
+		return mDao.updateMenu(menu);
+	}
+
+	@Override
 	public int deleteMenu(int menuNo) {
 		return mDao.deleteMenu(menuNo);
 	}

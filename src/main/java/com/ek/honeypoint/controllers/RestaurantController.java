@@ -16,6 +16,7 @@ import com.ek.honeypoint.exceptions.RestaurantException;
 import com.ek.honeypoint.models.Favor;
 import com.ek.honeypoint.models.HPResponse;
 import com.ek.honeypoint.models.InsertReviewImg;
+import com.ek.honeypoint.models.Menu;
 import com.ek.honeypoint.models.Photofile;
 import com.ek.honeypoint.models.Reservation;
 import com.ek.honeypoint.models.Restaurant;
@@ -37,6 +38,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,41 +60,47 @@ public class RestaurantController {
 	private FileService fileService;
 	@Value("${file.path}")
 	private String filePath;
-	
+
 	private Logger logger = LoggerFactory.getLogger(RestaurantController.class);
-	
-	@GetMapping(value="/api/restaurant/{restaurantId}")
+
+	@GetMapping(value = "/api/restaurant/{restaurantId}")
 	@ResponseBody
-	public HPResponse detail (
-		@PathVariable(value = "restaurantId") int restaurantId,
-		@RequestParam(value = "fetchMenuList", defaultValue = "false") Boolean fetchMenuList,
-		@RequestParam(value = "fetchFavorCount", defaultValue = "false") Boolean fetchFavorCount,
-		@RequestParam(value = "fetchReservation", defaultValue = "false") Boolean fetchReservation,
-		@RequestParam(value = "fetchReviewList", defaultValue = "false") Boolean fetchReviewList,
-		@RequestParam(value = "fetchReviewCount", defaultValue = "false") Boolean fetchReviewCount
-	) throws RestaurantException {
+	public HPResponse detail(@PathVariable(value = "restaurantId") int restaurantId,
+			@RequestParam(value = "fetchMenuList", defaultValue = "false") Boolean fetchMenuList,
+			@RequestParam(value = "fetchFavorCount", defaultValue = "false") Boolean fetchFavorCount,
+			@RequestParam(value = "fetchReservation", defaultValue = "false") Boolean fetchReservation,
+			@RequestParam(value = "fetchReviewList", defaultValue = "false") Boolean fetchReviewList,
+			@RequestParam(value = "fetchReviewCount", defaultValue = "false") Boolean fetchReviewCount)
+			throws RestaurantException {
 		/**
 		 * 필수항목
 		 */
 		Restaurant restaurant = null;
 		ArrayList<Photofile> imgList = null;
-		ArrayList<RstrntMenu> menuList = null;
+		ArrayList<Menu> menuList = null;
 		ArrayList<Review> reviewList = null;
 		ArrayList<Reservation> reservationList = null;
 		int favorCount = 0;
 		int reviewCount = 0;
 		HPResponse response = new HPResponse();
-		
+
 		restaurant = rService.selectRestaurant(restaurantId);
-		if(restaurant != null) {
+		if (restaurant != null) {
+			imgList = rService.selectImgList(restaurantId);
+			ArrayList<String> fileIds = new ArrayList<String>();
+			System.out.println(imgList.size());
+			if (imgList.size() > 0) {
+				for (Photofile image : imgList) {
+					fileIds.add(image.getStreFileName());
+				}
+				restaurant.setFileIds(fileIds);
+			}
 			response.put("restaurant", restaurant);
-			// response.setImages(imgList);
 			response.put("total", 1);
 		} else {
 			throw new RestaurantException("맛집 상세조회에 실패하였습니다.");
 		}
-		// TODO: 이미지는 다시해야함
-		// imgList =  rService.selectImgList(rNo);
+
 		// 선택항목
 		if (fetchFavorCount == true) {
 			favorCount = favorService.restaurantFavorCount(restaurantId);
@@ -120,14 +128,28 @@ public class RestaurantController {
 
 	@GetMapping(value = "/api/restaurantByMember/{memberNo}")
 	@ResponseBody
-	public HPResponse selectRestaurantInfoByMember (
-		@PathVariable(value = "memberNo") int memberNo
-	) throws RestaurantException {
+	public HPResponse selectRestaurantInfoByMember(@PathVariable(value = "memberNo") int memberNo)
+			throws RestaurantException {
 		HPResponse response = new HPResponse();
 		Restaurant restaurant = null;
+		ArrayList<Photofile> imgList = null;
 
 		restaurant = rService.selectRestaurantInfoByMember(memberNo);
-
+		if (restaurant != null) {
+			imgList = rService.selectImgList(restaurant.getRNo());
+			ArrayList<String> fileIds = new ArrayList<String>();
+			System.out.println(imgList.size());
+			if (imgList.size() > 0) {
+				for (Photofile image : imgList) {
+					fileIds.add(image.getStreFileName());
+				}
+				restaurant.setFileIds(fileIds);
+			}
+			response.put("restaurant", restaurant);
+			response.put("total", 1);
+		} else {
+			throw new RestaurantException("맛집 상세조회에 실패하였습니다.");
+		}
 		if (restaurant != null) {
 			response.put("restaurant", restaurant);
 		} else {
@@ -135,25 +157,46 @@ public class RestaurantController {
 		}
 		return response;
 	}
-	
+
+	@PostMapping(value = "/api/restaurant/update")
+	@ResponseBody
+	public HPResponse updateRestaurantInfo(@RequestBody Restaurant restaurant) {
+		HPResponse response = new HPResponse();
+		int updateResult = rService.updateRestaurant(restaurant);
+
+		if (updateResult > 0) {
+			response.put("msg", "레스토랑 정보 변경이 완료되었습니다.");
+			response.put("restaurant", restaurant);
+		} else {
+			response.put("error", true);
+			response.put("msg", "레스토랑 정보 변경에 실패하였습니다.");
+		}
+		return response;
+	}
+
 	@GetMapping(value = "/api/restaurants")
 	@ResponseBody
-	public HPResponse list(
-		@RequestParam(value = "restaurantType", defaultValue = "") String restaurantType
-	) {
-		//FIXME: 추후에 이미지 파일 필요하다면 JOIN 형태로 들어갈지 파일 컨트롤러 따로 가져올지 정의하기
+	public HPResponse list(@RequestParam(value = "restaurantType", defaultValue = "") String restaurantType) {
+		// FIXME: 추후에 이미지 파일 필요하다면 JOIN 형태로 들어갈지 파일 컨트롤러 따로 가져올지 정의하기
 		HPResponse response = new HPResponse();
-		ArrayList<Restaurant> restaurants = null;
+		ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
 		if (restaurantType != "") {
 			restaurants = rService.selectRestaurants(restaurantType);
-		} else {
-			// restaurants = rService.selectRestaurants();
 		}
-		if (restaurants != null) {
-			response.put("restaurants", restaurants);
-			
+		if (restaurants.size() > 0) {
 			int total = restaurants.size();
 			response.put("total", total);
+
+			ArrayList<Photofile> imgList = null;
+			for (Restaurant restaurant : restaurants) {
+				imgList = rService.selectImgList(restaurant.getRNo());
+				ArrayList<String> fileIds = new ArrayList<String>();
+				for (Photofile image : imgList) {
+					fileIds.add(image.getStreFileName());
+				}
+				restaurant.setFileIds(fileIds);
+			}
+			response.put("restaurants", restaurants);
 		} else {
 			throw new RestaurantException("맛집 리스트 조회에 실패하였습니다.");
 		}
@@ -162,10 +205,8 @@ public class RestaurantController {
 
 	@GetMapping(value = "/api/searchRestaurants")
 	@ResponseBody
-	public HPResponse searchRestaurants(
-		@RequestParam(value = "keyword", defaultValue = "") String keyword
-	) {
-		//FIXME: 추후에 이미지 파일 필요하다면 JOIN 형태로 들어갈지 파일 컨트롤러 따로 가져올지 정의하기
+	public HPResponse searchRestaurants(@RequestParam(value = "keyword", defaultValue = "") String keyword) {
+		// FIXME: 추후에 이미지 파일 필요하다면 JOIN 형태로 들어갈지 파일 컨트롤러 따로 가져올지 정의하기
 		HPResponse response = new HPResponse();
 		ArrayList<Restaurant> restaurants = null;
 		if (keyword != "") {
@@ -175,7 +216,7 @@ public class RestaurantController {
 		}
 		if (restaurants != null) {
 			response.put("restaurants", restaurants);
-			
+
 			int total = restaurants.size();
 			response.put("total", total);
 		} else {
@@ -185,440 +226,462 @@ public class RestaurantController {
 	}
 
 	// 레스토랑 이미지 수정 레스토랑은 항상 회원가입 후에 이미지를 올릴 수 있으므로 다른 정보랑 api를 다르게
-	@PostMapping(value="/api/file/restaurant/{restaurantId}")
+	@PostMapping(value = "/api/file/restaurant/{restaurantId}")
 	@ResponseBody
-	public HPResponse addFileOnRestaurant(
-		@PathVariable(value = "restaurantId") int restaurantId,
-		@RequestPart("files") List<MultipartFile> filePart
-	) {
-		System.out.println(filePart + "ddd@");
+	public HPResponse addFileOnRestaurant(@PathVariable(value = "restaurantId") int restaurantId,
+			@RequestPart("files") List<MultipartFile> insertFileList) {
 		HPResponse response = new HPResponse();
 		String path = filePath + "/restaurants" + "/" + restaurantId;
-		System.out.println(path);
-    ArrayList<Photofile> photofiles = fileService.saveFileOnRestaurant(filePart, path, restaurantId);
-		int result = rService.insertRestaurantImg(photofiles);
-		System.out.println(result);
+
+		ArrayList<Photofile> deleteList = new ArrayList<Photofile>();
+		ArrayList<MultipartFile> addList = new ArrayList<MultipartFile>();
+		ArrayList<Photofile> prevImages = rService.selectImgList(restaurantId);
+		if (prevImages.size() > 0) {
+			for (Photofile prevImage : prevImages) {
+				Boolean isExist = false;
+				String prevFileName = prevImage.getStreFileName();
+				for (MultipartFile insertFile : insertFileList) {
+					if (insertFile.getOriginalFilename().equals(prevFileName))
+						isExist = true;
+				}
+				if (isExist == false) {
+					deleteList.add(prevImage);
+				}
+			}
+		}
+		for (MultipartFile insertFile : insertFileList) {
+			Boolean isExist = false;
+			String insertFileName = insertFile.getOriginalFilename();
+			for (Photofile prevImage : prevImages) {
+				if (prevImage.getStreFileName().equals(insertFileName))
+					isExist = true;
+			}
+			if (isExist == false) {
+				addList.add(insertFile);
+			}
+		}
+		if (deleteList.size() > 0) {
+			Boolean isDeleted = fileService.deleteFilesOnRestaurant(deleteList, path);
+			if (isDeleted) {
+				int deleteResult = rService.deleteRestaurantImg(deleteList);
+				System.out.print(deleteResult);
+			}
+		}
+
+		ArrayList<Photofile> photofiles = fileService.saveFileOnRestaurant(insertFileList, path, restaurantId);
+		int insertResult = rService.insertRestaurantImg(photofiles);
+		System.out.println(insertResult);
 		return response;
 	}
 
-
-	//FIXME: 리턴타입, url주소 & 이미지랑 함께 리턴하는 방법 생각해보기 ?
+	// FIXME: 리턴타입, url주소 & 이미지랑 함께 리턴하는 방법 생각해보기 ?
 	@RequestMapping("moreReview.do")
-	public ModelAndView selectReviewList(ModelAndView mv, int rNo, int startNum, int filterCheck, HttpServletResponse response) {
-		
+	public ModelAndView selectReviewList(ModelAndView mv, int rNo, int startNum, int filterCheck,
+			HttpServletResponse response) {
+
 		HashMap<String, Integer> value = new HashMap<String, Integer>();
 		value.put("rNo", rNo);
 		value.put("startNum", startNum);
-		//FIXME: 필터 체크의 의미?
+		// FIXME: 필터 체크의 의미?
 		value.put("filterCheck", filterCheck);
-		
+
 		ArrayList<Review> reviewList = null;
-		
-		if(filterCheck == 0) {
+
+		if (filterCheck == 0) {
 			reviewList = rService.selectReviewList(value);
-		}else if(filterCheck == 1) {
+		} else if (filterCheck == 1) {
 			reviewList = rService.selectReviewFilterList(value);
-		}else if(filterCheck == 2) {
+		} else if (filterCheck == 2) {
 			// FIXME: 필터체크 1,2 그리고 else 차이?
 			reviewList = rService.selectReviewFilterList(value);
-		}else {
+		} else {
 			reviewList = rService.selectReviewFilterList(value);
 		}
-		
 
-		
 		Map<String, ArrayList<Review>> map = new HashMap<String, ArrayList<Review>>();
 		map.put("reviewList", reviewList);
-		
-		
+
 		mv.addAllObjects(map);
 		mv.setViewName("jsonView");
-		
+
 		response.setContentType("application/json; charset=utf-8");
-		
+
 		return mv;
-		
+
 	}
-	
 
 	// FIXME: 리턴타입, url주소 + 리뷰랑 함께 리턴하는 방법 생각해보기
 	@RequestMapping("moreReviewImg.do")
 	public ModelAndView selectReviewImgList(ModelAndView mv, int rNo, int revNo, HttpServletResponse response) {
-		
+
 		HashMap<String, Integer> value = new HashMap<String, Integer>();
 		value.put("rNo", rNo);
 		value.put("revNo", revNo);
-		
+
 		ArrayList<ReviewImg> reviewImgList = rService.selectReviewImgList(value);
-		
+
 		Map<String, ArrayList<ReviewImg>> map = new HashMap<String, ArrayList<ReviewImg>>();
 		map.put("reviewImgList", reviewImgList);
-		
-		
+
 		mv.addAllObjects(map);
 		mv.setViewName("jsonView");
-		
+
 		response.setContentType("application/json; charset=utf-8");
-		
+
 		return mv;
-		
+
 	}
 
 	// // FIXME: 리턴타입, url주소
 	// @RequestMapping(value="insertReview.do", method = RequestMethod.POST)
-	// public String boardInsert(Review rev, HttpServletRequest request, HttpServletResponse response,
-	// 		MultipartHttpServletRequest multi) {
-		
-	// 	int result1 = rService.insertReview(rev);
+	// public String boardInsert(Review rev, HttpServletRequest request,
+	// HttpServletResponse response,
+	// MultipartHttpServletRequest multi) {
 
-	// 	//FIXME: 파일 로컬에 저장하도록 수정
-	// 	if(result1 > 0) {
-	// 		if(multi.getFileNames().hasNext()) {
-				
-	// 			String root = request.getSession().getServletContext().getRealPath("resources");
-	// 			String savePath = root + "\\img\\review";
-	// 			String fileName = "";
-	// 			ArrayList<String> originFileList = new ArrayList<String>();
-	// 			ArrayList<String> renameFileList = new ArrayList<String>();
-				
-	// 			File folder = new File(savePath);
+	// int result1 = rService.insertReview(rev);
 
-	// 			if(!folder.exists()) {
-	// 				folder.mkdirs();
-	// 			}
-				
-	// 			Iterator<String> files = multi.getFileNames();
-				
-	// 			while(files.hasNext()) {
-	// 				String uploadFile = files.next();
-					
-	// 				MultipartFile mFile = multi.getFile(uploadFile);
-	// 				System.out.println("원본 파일 이름 : " +  mFile.getOriginalFilename());
-	// 				if(mFile.getOriginalFilename().equals("")) {
-	// 					continue;
-	// 				}
-				
-	// 				// FIXME: 파일 명명규칙 수정
-	// 				// 파일 이름짓기
-	// 				int ranNum = (int)(Math.random() * 100000);
-	// 				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-	// 				String originFileName = mFile.getOriginalFilename();
-	// 				fileName = sdf.format(new Date()) + "_" + ranNum 
-	// 						+ originFileName.substring(originFileName.lastIndexOf("."));
-					
-	// 				try {
-	// 					System.out.println(folder + "\\"  + fileName);
-	// 					mFile.transferTo(new File(folder + "\\"  + fileName));
-						
-	// 					originFileList.add(originFileName);
-	// 					renameFileList.add(fileName);
-	// 				} catch (Exception e) {
-	// 					e.printStackTrace();
-	// 				}
-	// 			}
-				
-	// 			if(originFileList.isEmpty()) {
-	// 				return "redirect:detail.do?rNo=" + rev.getRNo();
-	// 			}
-				
-	// 			InsertReviewImg value = new InsertReviewImg();
-				
-	// 			value.setRNo(rev.getRNo());
-	// 			value.setOriginFileList(originFileList);
-	// 			value.setRenameFileList(renameFileList);
+	// //FIXME: 파일 로컬에 저장하도록 수정
+	// if(result1 > 0) {
+	// if(multi.getFileNames().hasNext()) {
 
-	// 			int result2 = rService.insertReviewImg(value);
-				
-	// 			if(result2 > 0) {
-	// 				if(logger.isDebugEnabled()) {
-	// 					logger.debug(rev.getRevNo() + "번째 리뷰가 생성되었습니다.");
-	// 				}
-					
-	// 				return "redirect:detail.do?rNo=" + rev.getRNo();
-					
-	// 			}else {
-					
-	// 				throw new RestaurantException("리뷰 이미지 등록에 실패하였습니다.");
-					
-	// 			}
-				
-	// 		}else {
-				
-	// 			return "redirect:detail.do?rNo=" + rev.getRNo();
-				
-	// 		}
-	// 	}else {
-			
-	// 		throw new RestaurantException("리뷰 등록에 실패하였습니다.");
-			
-	// 	}
-		
-		
+	// String root =
+	// request.getSession().getServletContext().getRealPath("resources");
+	// String savePath = root + "\\img\\review";
+	// String fileName = "";
+	// ArrayList<String> originFileList = new ArrayList<String>();
+	// ArrayList<String> renameFileList = new ArrayList<String>();
+
+	// File folder = new File(savePath);
+
+	// if(!folder.exists()) {
+	// folder.mkdirs();
 	// }
-	
 
-	// // FIXME: 업데이트 하고 나서 완료되면 해당 업데이트 된 페이지 내용을 다시 업데이트한다 
+	// Iterator<String> files = multi.getFileNames();
+
+	// while(files.hasNext()) {
+	// String uploadFile = files.next();
+
+	// MultipartFile mFile = multi.getFile(uploadFile);
+	// System.out.println("원본 파일 이름 : " + mFile.getOriginalFilename());
+	// if(mFile.getOriginalFilename().equals("")) {
+	// continue;
+	// }
+
+	// // FIXME: 파일 명명규칙 수정
+	// // 파일 이름짓기
+	// int ranNum = (int)(Math.random() * 100000);
+	// SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+	// String originFileName = mFile.getOriginalFilename();
+	// fileName = sdf.format(new Date()) + "_" + ranNum
+	// + originFileName.substring(originFileName.lastIndexOf("."));
+
+	// try {
+	// System.out.println(folder + "\\" + fileName);
+	// mFile.transferTo(new File(folder + "\\" + fileName));
+
+	// originFileList.add(originFileName);
+	// renameFileList.add(fileName);
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// }
+
+	// if(originFileList.isEmpty()) {
+	// return "redirect:detail.do?rNo=" + rev.getRNo();
+	// }
+
+	// InsertReviewImg value = new InsertReviewImg();
+
+	// value.setRNo(rev.getRNo());
+	// value.setOriginFileList(originFileList);
+	// value.setRenameFileList(renameFileList);
+
+	// int result2 = rService.insertReviewImg(value);
+
+	// if(result2 > 0) {
+	// if(logger.isDebugEnabled()) {
+	// logger.debug(rev.getRevNo() + "번째 리뷰가 생성되었습니다.");
+	// }
+
+	// return "redirect:detail.do?rNo=" + rev.getRNo();
+
+	// }else {
+
+	// throw new RestaurantException("리뷰 이미지 등록에 실패하였습니다.");
+
+	// }
+
+	// }else {
+
+	// return "redirect:detail.do?rNo=" + rev.getRNo();
+
+	// }
+	// }else {
+
+	// throw new RestaurantException("리뷰 등록에 실패하였습니다.");
+
+	// }
+
+	// }
+
+	// // FIXME: 업데이트 하고 나서 완료되면 해당 업데이트 된 페이지 내용을 다시 업데이트한다
 	// @RequestMapping("updateReviewView.do")
-	// public ModelAndView updateReviewView(ModelAndView mv, 
-	// 		@RequestParam("rNo") int rNo, @RequestParam("revNo") int revNo) {
-		
-	// 	Review rev = rService.selectReview(rNo, revNo);
-		
-	// 	HashMap<String, Integer> value = new HashMap<String, Integer>();
-	// 	value.put("rNo", rNo);
-	// 	value.put("revNo", revNo);
-		
-	// 	ArrayList<ReviewImg> reviewImgList = rService.selectReviewImgList(value);
-		
-		
-	// 	if(rev != null) {
-	// 		mv.addObject("img", reviewImgList);
-	// 		mv.addObject("review", rev);
-	// 		mv.setViewName("restaurant/updateReviewPage");
-	// 	}else {
-	// 		throw new RestaurantException("리뷰 수정 페이지를 불러오는데 실패하였습니다.");
-	// 	}
+	// public ModelAndView updateReviewView(ModelAndView mv,
+	// @RequestParam("rNo") int rNo, @RequestParam("revNo") int revNo) {
 
-	// 	return mv;
+	// Review rev = rService.selectReview(rNo, revNo);
+
+	// HashMap<String, Integer> value = new HashMap<String, Integer>();
+	// value.put("rNo", rNo);
+	// value.put("revNo", revNo);
+
+	// ArrayList<ReviewImg> reviewImgList = rService.selectReviewImgList(value);
+
+	// if(rev != null) {
+	// mv.addObject("img", reviewImgList);
+	// mv.addObject("review", rev);
+	// mv.setViewName("restaurant/updateReviewPage");
+	// }else {
+	// throw new RestaurantException("리뷰 수정 페이지를 불러오는데 실패하였습니다.");
 	// }
-	
+
+	// return mv;
+	// }
+
 	// @RequestMapping(value="updateReview.do", method = RequestMethod.POST)
-	// public String updateReview(Review rev, MultipartHttpServletRequest multi, HttpServletRequest request, @RequestParam("lastNumber") int lastNumber) {
-	// 	int result = 0;
-	// 	System.out.println(rev);
-		
-	// 	String[] names = request.getParameterValues("deleteNames");
-		
-	// 	//System.out.println(names.length);
-	// 	//System.out.println(names[0]);
-	// 	if(names != null) {
-	// 		// int result = rService.deleteReviewImg(rev, names);
-	// 		for(int i = 0; i < names.length; i++) {
-	// 			result = rService.deleteReviewImage(names[i]);
-	// 		}
-			
-			
-	// 		if(result == 0) {
-	// 			throw new RestaurantException("기존 리뷰 이미지 삭제 실패.");
-	// 		}else {
-	// 			int result1 = rService.updateReview(rev);
-				
-	// 			if(result1 == 0) {
-	// 				throw new RestaurantException("리뷰 내용 수정 실패.");
-	// 			}
-	// 		}
-	// 	}else {
-	// 		int result1 = rService.updateReview(rev);
-	// 	}
-		
-	// 	// 새로운 리뷰 이미지 파일 첨부
-		
-	// 	if(multi.getFileNames().hasNext()) {
-			
-	// 		String root = request.getSession().getServletContext().getRealPath("resources");
-	// 		String savePath = root + "\\img\\review";
-	// 		String fileName = "";
-	// 		ArrayList<String> originFileList = new ArrayList<String>();
-	// 		ArrayList<String> renameFileList = new ArrayList<String>();
-			
-	// 		File folder = new File(savePath);
+	// public String updateReview(Review rev, MultipartHttpServletRequest multi,
+	// HttpServletRequest request, @RequestParam("lastNumber") int lastNumber) {
+	// int result = 0;
+	// System.out.println(rev);
 
-	// 		if(folder.exists()) {
-	// 			folder.mkdirs();
-	// 		}
-			
-	// 		Iterator<String> files = multi.getFileNames();
-			
-	// 		while(files.hasNext()) {
-	// 			String uploadFile = files.next();
-				
-	// 			MultipartFile mFile = multi.getFile(uploadFile);
-	// 			System.out.println("원본 파일 이름 : " +  mFile.getOriginalFilename());
-	// 			if(mFile.getOriginalFilename().equals("")) {
-	// 				continue;
-	// 			}
-				
-	// 			// 파일 이름짓기
-	// 			int ranNum = (int)(Math.random() * 100000);
-	// 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-	// 			String originFileName = mFile.getOriginalFilename();
-	// 			fileName = sdf.format(new Date()) + "_" + ranNum 
-	// 					+ originFileName.substring(originFileName.lastIndexOf("."));
-				
-	// 			try {
-	// 				System.out.println(folder + "\\"  + fileName);
-	// 				mFile.transferTo(new File(folder + "\\"  + fileName));
-	// 				originFileList.add(originFileName);
-	// 				renameFileList.add(fileName);
-	// 			} catch (Exception e) {
-	// 				e.printStackTrace();
-	// 			}
-	// 		}
-			
-	// 		if(originFileList.isEmpty()) {
-	// 			return "redirect:detail.do?rNo=" + rev.getRNo();
-	// 		}
-			
-	// 		UpdateReviewImg value = new UpdateReviewImg();
-			
-	// 		value.setRNo(rev.getRNo());
-	// 		value.setRevNo(rev.getRevNo());
-	// 		value.setOriginFileList(originFileList);
-	// 		value.setRenameFileList(renameFileList);
-			
-	// 		ArrayList<Integer> lastNumberCount = new ArrayList<Integer>();
-	// 		System.out.println("리네임파일크기 : " + renameFileList.size());
-	// 		if(lastNumber != 0) {
-	// 			for(int i = lastNumber + 1; i < lastNumber + renameFileList.size() + 1; i++) {
-	// 				lastNumberCount.add(i);
-	// 			}
-	// 		}else {
-	// 			lastNumberCount.add(1);
-	// 		}
-			
-			
-	// 		value.setLastNumberCount(lastNumberCount);
-			
-	// 		int result2 = rService.updateReviewImg(value);
-			
-	// 		if(result2 > 0) {
-	// 			if(logger.isDebugEnabled()) {
-	// 				logger.debug(rev.getRevNo() + "번째 리뷰가 생성되었습니다.");
-	// 			}
-				
-	// 			return "redirect:detail.do?rNo=" + rev.getRNo();
-				
-	// 		}else {
-				
-	// 			throw new RestaurantException("리뷰 이미지 등록에 실패하였습니다.");
-				
-	// 		}
-			
-	// 	}else {
-			
-	// 		return "redirect:detail.do?rNo=" + rev.getRNo();
-			
-	// 	}
-	
+	// String[] names = request.getParameterValues("deleteNames");
+
+	// //System.out.println(names.length);
+	// //System.out.println(names[0]);
+	// if(names != null) {
+	// // int result = rService.deleteReviewImg(rev, names);
+	// for(int i = 0; i < names.length; i++) {
+	// result = rService.deleteReviewImage(names[i]);
 	// }
-	
+
+	// if(result == 0) {
+	// throw new RestaurantException("기존 리뷰 이미지 삭제 실패.");
+	// }else {
+	// int result1 = rService.updateReview(rev);
+
+	// if(result1 == 0) {
+	// throw new RestaurantException("리뷰 내용 수정 실패.");
+	// }
+	// }
+	// }else {
+	// int result1 = rService.updateReview(rev);
+	// }
+
+	// // 새로운 리뷰 이미지 파일 첨부
+
+	// if(multi.getFileNames().hasNext()) {
+
+	// String root =
+	// request.getSession().getServletContext().getRealPath("resources");
+	// String savePath = root + "\\img\\review";
+	// String fileName = "";
+	// ArrayList<String> originFileList = new ArrayList<String>();
+	// ArrayList<String> renameFileList = new ArrayList<String>();
+
+	// File folder = new File(savePath);
+
+	// if(folder.exists()) {
+	// folder.mkdirs();
+	// }
+
+	// Iterator<String> files = multi.getFileNames();
+
+	// while(files.hasNext()) {
+	// String uploadFile = files.next();
+
+	// MultipartFile mFile = multi.getFile(uploadFile);
+	// System.out.println("원본 파일 이름 : " + mFile.getOriginalFilename());
+	// if(mFile.getOriginalFilename().equals("")) {
+	// continue;
+	// }
+
+	// // 파일 이름짓기
+	// int ranNum = (int)(Math.random() * 100000);
+	// SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+	// String originFileName = mFile.getOriginalFilename();
+	// fileName = sdf.format(new Date()) + "_" + ranNum
+	// + originFileName.substring(originFileName.lastIndexOf("."));
+
+	// try {
+	// System.out.println(folder + "\\" + fileName);
+	// mFile.transferTo(new File(folder + "\\" + fileName));
+	// originFileList.add(originFileName);
+	// renameFileList.add(fileName);
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// }
+
+	// if(originFileList.isEmpty()) {
+	// return "redirect:detail.do?rNo=" + rev.getRNo();
+	// }
+
+	// UpdateReviewImg value = new UpdateReviewImg();
+
+	// value.setRNo(rev.getRNo());
+	// value.setRevNo(rev.getRevNo());
+	// value.setOriginFileList(originFileList);
+	// value.setRenameFileList(renameFileList);
+
+	// ArrayList<Integer> lastNumberCount = new ArrayList<Integer>();
+	// System.out.println("리네임파일크기 : " + renameFileList.size());
+	// if(lastNumber != 0) {
+	// for(int i = lastNumber + 1; i < lastNumber + renameFileList.size() + 1; i++)
+	// {
+	// lastNumberCount.add(i);
+	// }
+	// }else {
+	// lastNumberCount.add(1);
+	// }
+
+	// value.setLastNumberCount(lastNumberCount);
+
+	// int result2 = rService.updateReviewImg(value);
+
+	// if(result2 > 0) {
+	// if(logger.isDebugEnabled()) {
+	// logger.debug(rev.getRevNo() + "번째 리뷰가 생성되었습니다.");
+	// }
+
+	// return "redirect:detail.do?rNo=" + rev.getRNo();
+
+	// }else {
+
+	// throw new RestaurantException("리뷰 이미지 등록에 실패하였습니다.");
+
+	// }
+
+	// }else {
+
+	// return "redirect:detail.do?rNo=" + rev.getRNo();
+
+	// }
+
+	// }
+
 	// @RequestMapping("deleteReview.do")
-	// public ModelAndView deleteReview(ModelAndView mv, int rNo, int revNo, HttpServletResponse response, HttpServletRequest request) {
-	// 	System.out.println(revNo);
-		
-	// 	int result = rService.deleteReview(revNo);
-		
-	// 	if(result != 0) {
-			
-	// 		ArrayList<String> names = new ArrayList<String>();
-			
-	// 		names = rService.getRevImgNames(revNo);
-	// 		System.out.println("names : " + names);
-	// 		if(names != null) {
-	// 			// int result = rService.deleteReviewImg(rev, names);
-	// 			for(int i = 0; i < names.size(); i++) {
-	// 				result = rService.deleteReviewImage(names.get(i));
-					
+	// public ModelAndView deleteReview(ModelAndView mv, int rNo, int revNo,
+	// HttpServletResponse response, HttpServletRequest request) {
+	// System.out.println(revNo);
 
-	// 				//FIXME: 서버 열린 로컬에 저장하는 쪽으로 수정
-	// 				if(result != 0) {
-	// 					String root = request.getSession().getServletContext().getRealPath("resources");
-	// 					String savePath = root + "\\img\\review";
-						
-	// 					File deleteFile = new File(savePath + "\\" + names.get(i));
-						
-	// 					if(deleteFile.exists()) {
-	// 						deleteFile.delete();
-	// 						System.out.println( i + "번째 파일 삭제 성공");
-	// 					}
-	// 				}
-					
-	// 			}
-				
-				
-	// 			if(result != 0) {
-	// 				// 여기다 카운팅 메소드 넣을거임
-	// 				ReviewCount reviewCount = rService.selectReviewCount(rNo);
-					
-	// 				mv.addObject("reviewCount", reviewCount);
-	// 				mv.setViewName("jsonView");
-					
-	// 				response.setContentType("application/json; charset=utf-8");
-					
-	// 				return mv;
-					
-	// 			}
-	// 		}
-			
-			
-			
-			
-	// 	}else {
-	// 		throw new RestaurantException("리뷰  삭제에 실패하였습니다.");
-	// 	}
-	// 	ReviewCount reviewCount = rService.selectReviewCount(rNo);
-		
-	// 	mv.addObject("reviewCount", reviewCount);
-		
-	// 	mv.setViewName("jsonView");
-		
-	// 	response.setContentType("application/json; charset=utf-8");
-		
-	// 	return mv;
+	// int result = rService.deleteReview(revNo);
+
+	// if(result != 0) {
+
+	// ArrayList<String> names = new ArrayList<String>();
+
+	// names = rService.getRevImgNames(revNo);
+	// System.out.println("names : " + names);
+	// if(names != null) {
+	// // int result = rService.deleteReviewImg(rev, names);
+	// for(int i = 0; i < names.size(); i++) {
+	// result = rService.deleteReviewImage(names.get(i));
+
+	// //FIXME: 서버 열린 로컬에 저장하는 쪽으로 수정
+	// if(result != 0) {
+	// String root =
+	// request.getSession().getServletContext().getRealPath("resources");
+	// String savePath = root + "\\img\\review";
+
+	// File deleteFile = new File(savePath + "\\" + names.get(i));
+
+	// if(deleteFile.exists()) {
+	// deleteFile.delete();
+	// System.out.println( i + "번째 파일 삭제 성공");
+	// }
+	// }
 
 	// }
-	
+
+	// if(result != 0) {
+	// // 여기다 카운팅 메소드 넣을거임
+	// ReviewCount reviewCount = rService.selectReviewCount(rNo);
+
+	// mv.addObject("reviewCount", reviewCount);
+	// mv.setViewName("jsonView");
+
+	// response.setContentType("application/json; charset=utf-8");
+
+	// return mv;
+
+	// }
+	// }
+
+	// }else {
+	// throw new RestaurantException("리뷰 삭제에 실패하였습니다.");
+	// }
+	// ReviewCount reviewCount = rService.selectReviewCount(rNo);
+
+	// mv.addObject("reviewCount", reviewCount);
+
+	// mv.setViewName("jsonView");
+
+	// response.setContentType("application/json; charset=utf-8");
+
+	// return mv;
+
+	// }
+
 	@RequestMapping("resve.do")
 	public ModelAndView insertResve(Reservation resve, ModelAndView mv, HttpServletResponse response) {
-		//System.out.println(resve);
-		
+		// System.out.println(resve);
+
 		int result = rService.insertResve(resve);
-		
-		/*int amount = Integer.parseInt(resve.getResveAmount());
-		resve.setResveAmount(Integer.toString(amount / 100 * 5));
-		
-		int result1 = rService.insertPoint(resve);*/
-		
-		if(result != 0) {
-			
+
+		/*
+		 * int amount = Integer.parseInt(resve.getResveAmount());
+		 * resve.setResveAmount(Integer.toString(amount / 100 * 5));
+		 * 
+		 * int result1 = rService.insertPoint(resve);
+		 */
+
+		if (result != 0) {
+
 			mv.setViewName("jsonView");
-			
+
 			response.setContentType("application/json; charset=utf-8");
-			
+
 			return mv;
-			
-			
-		}else {
+
+		} else {
 			throw new RestaurantException("예약 인서트 실패하였습니다.");
 		}
 	}
-	
 
 	// 리뷰지우기 기능 보류
-	
-	/*@RequestMapping("deleteImgFile.do")
-	public ModelAndView deleteImgFile(ModelAndView mv, ReviewImg revImg, HttpServletRequest request, HttpServletResponse response) {
-		
-		String fileName = rService.deleteImgFile(revImg);
-		System.out.println("db에서 삭제한 filename : " + fileName);
-		
-		if(!fileName.equals("")) {
-			String root = request.getSession().getServletContext().getRealPath("resources");
-			String savePath = root + "\\img\\review";
-			
-			File deleteFile = new File(savePath + "\\" + fileName);
-			
-			if(deleteFile.exists()) {
-				deleteFile.delete();
-				System.out.println("삭제 성공");
-			}
-			
-		}
-		mv.setViewName("jsonView");
-		
-		response.setContentType("application/json; charset=utf-8");
-		
-		return mv;
-	}*/
+
+	/*
+	 * @RequestMapping("deleteImgFile.do") public ModelAndView
+	 * deleteImgFile(ModelAndView mv, ReviewImg revImg, HttpServletRequest request,
+	 * HttpServletResponse response) {
+	 * 
+	 * String fileName = rService.deleteImgFile(revImg);
+	 * System.out.println("db에서 삭제한 filename : " + fileName);
+	 * 
+	 * if(!fileName.equals("")) { String root =
+	 * request.getSession().getServletContext().getRealPath("resources"); String
+	 * savePath = root + "\\img\\review";
+	 * 
+	 * File deleteFile = new File(savePath + "\\" + fileName);
+	 * 
+	 * if(deleteFile.exists()) { deleteFile.delete(); System.out.println("삭제 성공"); }
+	 * 
+	 * } mv.setViewName("jsonView");
+	 * 
+	 * response.setContentType("application/json; charset=utf-8");
+	 * 
+	 * return mv; }
+	 */
 
 }

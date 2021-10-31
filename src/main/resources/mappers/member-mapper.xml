@@ -104,18 +104,17 @@
 		SET
 		M_EMAIL = #{mEmail},
 		M_NAME = #{mName}
-
 		WHERE
 		M_NO = #{mNo}		
 	</update>
+
 	<update id="updateGeneralMember">
 		UPDATE TB_GNRL_MEMBER
-
-		SET M_PHONE = #{mPhone},
+		SET 
+		M_PHONE = #{mPhone},
 		M_ADDRESS = #{mAddress},
 		M_BIRTHDAY = #{mBirthday},
 		M_NICKNAME = #{mNickname}
-
 		WHERE
 		M_NO = #{mNo}		
 	</update>
@@ -167,6 +166,17 @@
 		</foreach>) A
 	</insert>
 
+	<update id="updateMenu" parameterType="Menu">
+		UPDATE TB_RSTRNT_MENU
+		SET
+		MENU_NAME = #{menuName},
+		MENU_PRICE = #{menuPrice}
+		WHERE
+		R_NO = #{rNo}
+		AND
+		MENU_NO = #{menuNo}
+	</update>
+
 	<delete id="deleteMenu" parameterType="_int">
 		DELETE FROM TB_RSTRNT_MENU
 		WHERE MENU_NO = #{menuNo}
@@ -182,11 +192,6 @@
 		FROM TB_RSTRNT_INFO
 		ORDER BY R_NO DESC
 	</select>
-	
-	<insert id="insertHistory" parameterType="_int">
-		INSERT INTO TB_LOGIN_HISTORY
-		VALUES (SYSDATE, #{mNo}, L_SEQ.NEXTVAL)
-	</insert>
 	
 	<select id="findIdByEmail" parameterType="String" resultType="String">
 		SELECT M_ID

@@ -323,17 +323,60 @@ public class memberController {
 	}
 
 	// 레스토랑 회원 메뉴 수정
-	@PostMapping(value = "api/menu/updateMenu")
+	@PostMapping(value = "api/menu/updateMenu/{rNo}")
 	@ResponseBody
 	public HPResponse updateMenu (
-		@RequestParam Menu menu
+		@RequestBody ArrayList<Menu> menus,
+		@PathVariable(value = "rNo") int rNo
 	) {
 		HPResponse response = new HPResponse();
-		// int updateResult = mService.updateMenu(menu);
-		// if (updateResult > 0) {
-			// menu = restaurantService.selectMenuList(menu.getrNo());
-			// response.put()
-		// }
+		/**
+		 * 입력된 menus 에서 menuId가 없으면 새로 생성
+		 * 있으면 수정
+		 */
+		ArrayList<Menu> prevMenus = restaurantService.selectMenuList(rNo);
+		ArrayList<Menu> deleteMenus = new ArrayList<Menu>();
+		ArrayList<Menu> addMenus = new ArrayList<Menu>();
+		ArrayList<Menu> updateMenus = new ArrayList<Menu>();
+		if (prevMenus.size() > 0) {
+			for (Menu prevMenu: prevMenus) {
+				Boolean isExist = false;
+				for (Menu menu: menus) {
+					Boolean equal = menu.getMenuNo() == prevMenu.getMenuNo();
+					if (equal) {
+						isExist = true;
+					}
+				}
+				if (isExist == false) {
+					deleteMenus.add(prevMenu);
+				}
+			}
+		}
+		if (menus.size() > 0) {
+			for (Menu menu: menus) {
+				if (menu.getMenuNo() != 0) {
+					updateMenus.add(menu);
+				} else {
+					addMenus.add(menu);
+				}
+			}
+		}
+		int deleteResult = 1;
+		for (Menu deleteMenu: deleteMenus) {
+			int menuDeleteResult = mService.deleteMenu(deleteMenu.getMenuNo());
+			if (menuDeleteResult != 1) {
+				deleteResult = menuDeleteResult;
+			}
+		}
+		int insertResult = mService.insertMenu(addMenus);
+		int updateResult = mService.updateMenu(updateMenus);
+		if (deleteResult > 0 & updateResult > 0 & insertResult > 0) {
+			menus = restaurantService.selectMenuList(rNo);
+			response.put("menus", menus);
+		} else {
+			response.put("error", true);
+			response.put("msg", "메뉴 수정에 실패하였습니다.");
+		}
 		return response;
 	}
 

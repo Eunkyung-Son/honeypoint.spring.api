@@ -2,8 +2,10 @@ package com.ek.honeypoint.services;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.ek.honeypoint.models.InsertReviewImg;
+import com.ek.honeypoint.models.Menu;
 import com.ek.honeypoint.models.Photofile;
 import com.ek.honeypoint.models.Reservation;
 import com.ek.honeypoint.models.Restaurant;
@@ -12,6 +14,8 @@ import com.ek.honeypoint.models.ReviewCount;
 import com.ek.honeypoint.models.ReviewImg;
 import com.ek.honeypoint.models.RstrntMenu;
 import com.ek.honeypoint.models.UpdateReviewImg;
+
+import org.springframework.web.multipart.MultipartFile;
 
 public interface RestaurantService {
 
@@ -23,11 +27,13 @@ public interface RestaurantService {
 
 	int insertRestaurantImg(ArrayList<Photofile> photofiles);
 
+	int deleteRestaurantImg(ArrayList<Photofile> photofiles);
+
 	int selectImgListCount(int rNo);
 
 	ArrayList<Photofile> selectImgList(int rNo);
 
-	ArrayList<RstrntMenu> selectMenuList(int rNo);
+	ArrayList<Menu> selectMenuList(int rNo);
 
 	ArrayList<Review> selectReviewList(HashMap<String, Integer> value);
 
@@ -58,5 +64,7 @@ public interface RestaurantService {
   Restaurant selectRestaurantInfoByMember(int memberNo);
 
   ArrayList<Restaurant> searchRestaurants(String keyword);
+
+  int updateRestaurant(Restaurant restaurant);
 
 }

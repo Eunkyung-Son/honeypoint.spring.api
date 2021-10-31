@@ -124,4 +124,15 @@ public class memberDao {
     return sqlSession.delete("memberMapper.deleteMenu", menuNo);
   }
 
+  public int updateMenu(ArrayList<Menu> menus) {
+		int result = 1;
+		for (Menu menu: menus) {
+			int updateResult = sqlSession.update("memberMapper.updateMenu", menu);
+			if (updateResult == 0) {
+				result = 0;
+			} 
+		}
+    return result;
+  }
+
 }

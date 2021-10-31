@@ -2,9 +2,11 @@ package com.ek.honeypoint.services;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.ek.honeypoint.daos.RestaurantDao;
 import com.ek.honeypoint.models.InsertReviewImg;
+import com.ek.honeypoint.models.Menu;
 import com.ek.honeypoint.models.Photofile;
 import com.ek.honeypoint.models.Reservation;
 import com.ek.honeypoint.models.Restaurant;
@@ -16,6 +18,7 @@ import com.ek.honeypoint.models.UpdateReviewImg;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service("rService")
 public class RestaurantServiceImpl implements RestaurantService {
@@ -48,6 +51,11 @@ public class RestaurantServiceImpl implements RestaurantService {
 	}
 
 	@Override
+	public int deleteRestaurantImg(ArrayList<Photofile> photofiles) {
+		return rDao.deleteRestaurantImg(photofiles);
+	}
+
+	@Override
 	public int selectImgListCount(int rNo) {
 		
 		return rDao.selectImgListCount(rNo);
@@ -59,7 +67,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 	}
 
 	@Override
-	public ArrayList<RstrntMenu> selectMenuList(int rNo) {
+	public ArrayList<Menu> selectMenuList(int rNo) {
 		return rDao.selectMenuList(rNo);
 	}
 
@@ -138,5 +146,8 @@ public class RestaurantServiceImpl implements RestaurantService {
 		return rDao.searchRestaurants(keyword);
 	}
 
-
+	@Override
+	public int updateRestaurant(Restaurant restaurant) {
+		return rDao.updateRestaurant(restaurant);
+	}
 }
