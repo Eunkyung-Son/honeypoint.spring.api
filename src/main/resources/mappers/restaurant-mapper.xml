@@ -123,6 +123,7 @@
 	<select id="selectAll" resultMap="restaurantResultSet">
 		SELECT *
 		FROM TB_RSTRNT_INFO
+		ORDER BY R_RATING DESC
 	</select>
 
 	<select id="selectAllWithType" parameterType="string" resultMap="restaurantResultSet">

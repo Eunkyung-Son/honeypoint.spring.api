@@ -15,9 +15,13 @@ import com.ek.honeypoint.services.FavorService;
 import com.ek.honeypoint.services.RestaurantService;
 import com.ek.honeypoint.services.ReviewService;
 import com.ek.honeypoint.services.memberService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ek.honeypoint.models.InsertResImg;
 import com.ek.honeypoint.models.Member;
 import com.ek.honeypoint.models.Menu;
+import com.ek.honeypoint.models.MenuUpdate;
 import com.ek.honeypoint.models.RestaurantMember;
 import com.ek.honeypoint.models.Review;
 import com.ek.honeypoint.models.Board;
@@ -191,7 +195,7 @@ public class memberController {
 	 * @param member
 	 * @return 회원 가입한 멤버
 	 */
-	@RequestMapping(value = "memberInsert", method = RequestMethod.POST)
+	@RequestMapping(value = "api/memberInsert", method = RequestMethod.POST)
 	@ResponseBody
 	@Transactional("transactionManager1")
 	public Member memberInsert(
@@ -216,7 +220,7 @@ public class memberController {
 	 * @param restaurant
 	 * @return 회원가입한 맛집회원
 	 */
-	@RequestMapping(value = "restaurantInsert", method = RequestMethod.POST)
+	@RequestMapping(value = "api/restaurantInsert", method = RequestMethod.POST)
 	@ResponseBody
 	@Transactional("transactionManager")
 	public RestaurantMember resInsert(
@@ -238,7 +242,7 @@ public class memberController {
 	 * @param id 아이디
 	 * @return 사용가능한지에 대한 true / false
 	 */
-	@RequestMapping(value = "idCheck", method = RequestMethod.GET)
+	@RequestMapping(value = "api/idCheck", method = RequestMethod.GET)
 	@ResponseBody
 	public Boolean idDuplicateCheck(
 		@RequestParam("id") String id
@@ -252,7 +256,7 @@ public class memberController {
 	 * @param email 이메일
 	 * @return 사용가능한지에 대한 true / false
 	 */
-	@RequestMapping(value = "emailCheck", method = RequestMethod.GET)
+	@RequestMapping(value = "api/emailCheck", method = RequestMethod.GET)
 	@ResponseBody
 	public Boolean emailDuplicateCheck(
 		@RequestParam("email") String email
@@ -326,14 +330,18 @@ public class memberController {
 	@PostMapping(value = "api/menu/updateMenu/{rNo}")
 	@ResponseBody
 	public HPResponse updateMenu (
-		@RequestBody ArrayList<Menu> menus,
+		@RequestBody MenuUpdate menuDto,
 		@PathVariable(value = "rNo") int rNo
-	) {
+	) throws JsonMappingException, JsonProcessingException {
 		HPResponse response = new HPResponse();
 		/**
 		 * 입력된 menus 에서 menuId가 없으면 새로 생성
 		 * 있으면 수정
 		 */
+		ArrayList<Menu> menus = menuDto.getMenus();
+		
+		System.out.print(menus.size());
+		// 여기 밑에 부터 로직이 좀 문제가 있음
 		ArrayList<Menu> prevMenus = restaurantService.selectMenuList(rNo);
 		ArrayList<Menu> deleteMenus = new ArrayList<Menu>();
 		ArrayList<Menu> addMenus = new ArrayList<Menu>();
@@ -397,96 +405,5 @@ public class memberController {
 		}
 		return response;
 	}
-
-	// TODO: 파일 저장 때문에 보류
-	@RequestMapping(value = "insertMenu.do", method = RequestMethod.POST)
-	public String menuInsert(Menu menu, HttpServletRequest request, MultipartHttpServletRequest multi) {
-		int rNo = mService.selectRno();
-		
-		
-		String[] menuName = request.getParameterValues("menuName"); 
-		String[] menuPrice = request.getParameterValues("menuPrice"); 
-		int result = 0;
-		int result2 = 0;
-		for (int i = 0; i < menuName.length; i++) { 
-			System.out.println(menuName[i]); 
-			result = mService.insertMenu(rNo,menuName[i],Integer.parseInt(menuPrice[i]));
-			}
-		
-
-		if (result > 0) { // 메뉴 가격등등 추가 완료됬을때
-			if (multi.getFileNames().hasNext()) {// 맛집 이미지파일이 존재할때
-				
-				System.out.println("첫번째");
-				
-				String root = request.getSession().getServletContext().getRealPath("resources");
-				String savePath = root + "//img//detailview";
-				String fileName = "";
-				ArrayList<String> originFileList = new ArrayList<String>();
-				ArrayList<String> renameFileList = new ArrayList<String>();
-
-				File folder = new File(savePath);
-
-				if (folder.exists()) {
-					folder.mkdirs();
-				}
-
-				Iterator<String> files = multi.getFileNames();
-				
-				System.out.println("두번째");
-				
-				while (files.hasNext()) {
-					String uploadFile = files.next();
-
-					MultipartFile mFile = multi.getFile(uploadFile);
-					System.out.println("원본 파일 이름 : " + mFile.getOriginalFilename());
-					if (mFile.getOriginalFilename().equals("")) {
-						continue;
-					}
-
-					// 파일 이름짓기
-					int ranNum = (int) (Math.random() * 100000);
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-					String originFileName = mFile.getOriginalFilename();
-					fileName = sdf.format(new Date()) + "_" + ranNum
-							+ originFileName.substring(originFileName.lastIndexOf("."));
-
-					try {
-						System.out.println(folder + "//" + fileName);
-						mFile.transferTo(new File(folder + "//" + fileName));
-						originFileList.add(originFileName);
-						renameFileList.add(fileName);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-
-				}
-				InsertResImg value = new InsertResImg();
-
-				value.setrNo(menu.getrNo());
-				value.setOriginFileList(originFileList);
-				value.setRenameFileList(renameFileList);
-
-				System.out.println("---------파일밸류값 확인 : "+ value);
-				for (int i = 0; i < originFileList.size(); i++) { 
-					System.out.println(originFileList.get(i)); 
-					result2 = mService.insertResImg(rNo,originFileList.get(i),renameFileList.get(i));
-					}
-				
-				if (result2 > 0) {
-					System.out.println("맛집 이미지 디비 등록완료");
-					
-				} else {
-					System.out.println("맛집 이미지 디비 등록실패");
-				}
-			}else {
-				System.out.println("맛집 이미지 추가해야함");
-			}
-		} else {
-			throw new memberException("맛집 등록에 실패하였습니다.");
-		}
-		return "member/rFinish";
-	}
-	
 	
 }

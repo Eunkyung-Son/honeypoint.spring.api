@@ -58,7 +58,7 @@ public class memberDao {
 
 	public int insertMenu(int rNo, String menuName, int menuPrice) {
 		Menu menu = new Menu();
-		menu.setrNo(rNo);
+		menu.setRNo(rNo);
 		menu.setMenuName(menuName);
 		menu.setMenuPrice(menuPrice);
 		return sqlSession.insert("memberMapper.insertMenu", menu);
