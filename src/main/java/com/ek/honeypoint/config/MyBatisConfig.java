@@ -23,12 +23,12 @@ public class MyBatisConfig {
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl("jdbc:oracle:thin:@localhost:1521:XE");
+        dataSource.setUrl("jdbc:oracle:thin:@3.34.194.170:1521:XE");
         // dataSource.setUrl("jdbc:oracle:thin:@210.113.14.162:49161:XE");
         // dataSource.setUsername("system");
         // dataSource.setPassword("oracle");
         dataSource.setUsername("honeypoint");
-        dataSource.setPassword("honeypoint1");
+        dataSource.setPassword("honeypoint");
         return dataSource;
     }
 

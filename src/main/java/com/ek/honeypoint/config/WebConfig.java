@@ -2,7 +2,9 @@ package com.ek.honeypoint.config;
 
 import com.ek.honeypoint.common.interceptor.LoginInterceptor;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -30,5 +32,14 @@ public class WebConfig implements WebMvcConfigurer{
                 registry.addInterceptor(loginInterceptor)
                         .addPathPatterns()
                         .excludePathPatterns();
+        }
+
+        @Bean
+        public CommonsMultipartResolver multipartResolver() {
+                CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+                multipartResolver.setDefaultEncoding("UTF-8");
+                multipartResolver.setMaxUploadSizePerFile(5 * 1024 * 1024);
+
+                return multipartResolver;
         }
 }
