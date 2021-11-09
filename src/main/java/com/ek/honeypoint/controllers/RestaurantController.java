@@ -141,13 +141,16 @@ public class RestaurantController {
 
 	@PostMapping(value = "/api/restaurant/update")
 	@ResponseBody
-	public HPResponse updateRestaurantInfo(@RequestBody Restaurant restaurant) {
+	public HPResponse updateRestaurantInfo (
+		@RequestBody Restaurant restaurant
+		) {
 		HPResponse response = new HPResponse();
 		int updateResult = rService.updateRestaurant(restaurant);
-
+		System.out.println(restaurant + "레스토랑 업데이트");
 		if (updateResult > 0) {
 			response.put("msg", "레스토랑 정보 변경이 완료되었습니다.");
-			response.put("restaurant", restaurant);
+			Restaurant selectRestaurant = rService.selectRestaurant(restaurant.getRNo());
+			response.put("restaurant", selectRestaurant);
 		} else {
 			response.put("error", true);
 			response.put("msg", "레스토랑 정보 변경에 실패하였습니다.");

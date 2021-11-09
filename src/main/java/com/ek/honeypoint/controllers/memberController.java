@@ -1,24 +1,14 @@
 package com.ek.honeypoint.controllers;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 import com.ek.honeypoint.exceptions.memberException;
 import com.ek.honeypoint.services.BoardService;
-import com.ek.honeypoint.services.FavorService;
 import com.ek.honeypoint.services.RestaurantService;
 import com.ek.honeypoint.services.ReviewService;
 import com.ek.honeypoint.services.memberService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ek.honeypoint.models.InsertResImg;
 import com.ek.honeypoint.models.Member;
 import com.ek.honeypoint.models.Menu;
 import com.ek.honeypoint.models.MenuUpdate;
@@ -28,7 +18,6 @@ import com.ek.honeypoint.models.Board;
 import com.ek.honeypoint.models.Comment;
 import com.ek.honeypoint.models.HPResponse;
 import com.ek.honeypoint.models.PasswordRequest;
-import com.ek.honeypoint.models.Restaurant;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,8 +34,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
@@ -125,7 +112,6 @@ public class memberController {
 		@RequestParam("email") String email
 	) throws Exception {
 		mService.findPwd(id, email);
-		// mService.findIdByEmail(email); TODO: 의미가 뭐지?
 	}
 	
 	// 비밀번호 변경

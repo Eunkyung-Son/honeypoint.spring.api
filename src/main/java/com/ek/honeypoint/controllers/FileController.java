@@ -1,60 +1,25 @@
 package com.ek.honeypoint.controllers;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.print.attribute.standard.Media;
-
-import com.ek.honeypoint.models.Photofile;
-import com.ek.honeypoint.services.FileService;
-import com.ek.honeypoint.services.RestaurantService;
-
-import org.apache.catalina.webresources.FileResource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 
 @RestController
 public class FileController {
-  
-  @Autowired
-  private FileService fileService;
-
-  @Autowired
-  private RestaurantService restaurantService;
 
   @Value("${file.path}")
   private String filePath;
-  
-  // @PostMapping(value="/api/file/restaurant/{restaurantId}")
-  // public void addFileOnRestaurant(
-  //   @PathVariable(value = "restaurantId") int restaurantId,
-  //   @RequestPart("files") List<MultipartFile> filePart
-  // ) {
-  //   String path = filePath + "/restaurants" + "/" + restaurantId;
-  //   ArrayList<Photofile> returnFile = fileService.saveFileOnRestaurant(filePart, path, restaurantId);
-    
-  // }
 
   @GetMapping(value="/api/file/restaurant/{restaurantId}/{fileId}")
   @ResponseBody
